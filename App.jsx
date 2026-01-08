@@ -738,6 +738,7 @@ const CrmDashboardPreview = () => {
 const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "", percent = "", description = "", ctaText = "Teste Grátis", popular = false, savings = "", dailyCost = "" }) => {
   const isElite = variant === 'elite';
   const isHighlighted = variant === 'highlighted';
+  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
 
   const cardStyles = {
     standard: "backdrop-blur-3xl bg-white/70 border-slate-200 shadow-2xl text-[#1A237E]",
@@ -789,7 +790,7 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
       <Button 
         variant={isElite ? 'glow' : (isHighlighted ? 'secondary' : 'outline')} 
         className="w-full" 
-        href={isElite ? "https://wa.me/5500000000000?text=Olá,%20gostaria%20de%20falar%20com%20um%20estrategista%20sobre%20o%20Plano%20Elite%20Studio." : "#teste"}
+        href={isElite ? `https://wa.me/${whatsappNumber}?text=Olá,%20gostaria%20de%20falar%20com%20um%20estrategista%20sobre%20o%20Plano%20Elite%20Studio.` : "#teste"}
         target={isElite ? "_blank" : "_self"}
       >
         {ctaText}
