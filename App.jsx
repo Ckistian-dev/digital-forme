@@ -641,7 +641,7 @@ const CrmDashboardPreview = () => {
                             </div>
                         ) : (
                             <div className="bg-[#d9fdd3] p-3 md:p-4 rounded-xl rounded-tr-none shadow-sm max-w-[85%] md:max-w-[70%] text-sm text-gray-800 relative animate-fade-in-up">
-                                <p className="leading-relaxed">É 100% nativa! 🚀 Você conecta seu WhatsApp e o CRM já começa a popular automaticamente com todos os leads.</p>
+                                <p className="leading-relaxed">É 100% nativa! 🚀 Você conecta seu WhatsApp e o CRM já começa a atender automaticamente todos os seus leads.</p>
                                 <div className="flex justify-end items-center gap-1 mt-1">
                                     <span className="text-[10px] text-gray-500">10:30</span>
                                     <CheckCircle2 size={12} className="text-gray-400" />
@@ -735,7 +735,7 @@ const CrmDashboardPreview = () => {
   );
 };
 
-const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "", percent = "", description = "", ctaText = "Teste Grátis", popular = false, savings = "", dailyCost = "" }) => {
+const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "", percent = "", description = "", ctaText = "Teste Grátis", popular = false, savings = "", dailyCost = "", paymentLink }) => {
   const isElite = variant === 'elite';
   const isHighlighted = variant === 'highlighted';
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
@@ -790,8 +790,8 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
       <Button 
         variant={isElite ? 'glow' : (isHighlighted ? 'secondary' : 'outline')} 
         className="w-full" 
-        href={isElite ? `https://wa.me/${whatsappNumber}?text=Olá,%20gostaria%20de%20falar%20com%20um%20estrategista%20sobre%20o%20Plano%20Elite%20Studio.` : "#teste"}
-        target={isElite ? "_blank" : "_self"}
+        href={paymentLink || (isElite ? `https://wa.me/${whatsappNumber}?text=Olá,%20gostaria%20de%20falar%20com%20um%20estrategista%20sobre%20o%20Plano%20Elite%20Studio.` : "#teste")}
+        target={paymentLink || isElite ? "_blank" : "_self"}
       >
         {ctaText}
       </Button>
@@ -1163,6 +1163,8 @@ export default function App() {
             subtitle="Atendimento Receptivo"
             price="297"
             percent="50%"
+            ctaText="Contratar Agora"
+            paymentLink={import.meta.env.VITE_ASAAS_ESSENTIAL_URL}
             features={[
               "Atendimento Humanizado Ativo",
               "50% Reversão em Créditos",
@@ -1182,6 +1184,8 @@ export default function App() {
             percent="100%"
             savings="Economize R$ 2.000/ano"
             dailyCost="Menos de R$ 20/dia"
+            ctaText="Contratar Agora"
+            paymentLink={import.meta.env.VITE_ASAAS_DOMINANCE_URL}
             features={[
               "Tudo do Plano Essencial",
               "Motor Prospect.AI Ativo",
