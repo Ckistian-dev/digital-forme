@@ -457,10 +457,10 @@ const TrustSection = () => (
         </p>
         <div className="flex flex-wrap justify-center items-center gap-6 md:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
           {/* Logos placeholders - replace with actual paths */}
-          <img src="/logos/openai.svg" alt="OpenAI" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
-          <img src="/logos/meta.svg" alt="Meta" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
-          <img src="/logos/aws.svg" alt="AWS" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
-          <img src="/logos/stripe.svg" alt="Stripe" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" alt="OpenAI" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" alt="Meta" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
         </div>
       </FadeIn>
     </div>
@@ -536,7 +536,7 @@ const CrmDashboardPreview = () => {
         </aside>
 
         {/* Chat Interface Container */}
-        <div className="flex-1 flex bg-gray-50 relative  max-w-[85%]">
+        <div className="flex-1 flex bg-gray-50 relative w-full overflow-hidden">
             
             {/* Contact List Sidebar */}
             <div className="w-72 bg-white border-r border-gray-200 flex flex-col hidden md:flex">
@@ -1046,7 +1046,7 @@ export default function App() {
         <div className="max-w-[1100px] mx-auto">
           <FadeIn>
             <div className="text-center mb-8 md:mb-28">
-              <h2 className="text-4xl md:text-7xl font-black text-[#1A237E] tracking-tighter mb-10 text-center mx-auto">Ecosistema <span className="text-[#C5A059]">360</span></h2>
+              <h2 className="text-4xl md:text-7xl font-black text-[#1A237E] tracking-tighter mb-10 text-center mx-auto">Ecossistema <span className="text-[#C5A059]">360</span></h2>
               <p className="text-xl md:text-2xl text-slate-500 font-light max-w-3xl mx-auto text-center leading-relaxed">
                 Sua operação comercial unificada em uma poderosa plataforma CRM, criando um ciclo infinito de atração e conversão automática.
               </p>
