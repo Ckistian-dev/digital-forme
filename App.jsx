@@ -457,10 +457,8 @@ const TrustSection = () => (
         </p>
         <div className="flex flex-wrap justify-center items-center gap-6 md:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
           {/* Logos placeholders - replace with actual paths */}
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" alt="OpenAI" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
           <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" alt="Meta" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
         </div>
       </FadeIn>
     </div>
@@ -985,14 +983,19 @@ export default function App() {
       if (response.status === 200) {
         const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
         if (whatsappNumber) {
-          const message = `Olá! Quero ver minha IA vendendo agora. Empresa: ${formState.description.substring(0, 50)}...`;
+          const message = `Olá! Com quem eu falo?`;
           window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
         }
         setFormState({ description: '', phone: '' });
       }
     } catch (error) {
       console.error("Erro ao enviar simulação:", error);
-      alert('Houve um erro ao processar sua solicitação. Por favor, tente novamente.');
+      // Fallback: Redirecionar para o WhatsApp em caso de erro
+      const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
+      if (whatsappNumber) {
+        const message = `Olá! Com quem eu falo?`;
+        window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+      }
     } finally {
       setIsLoading(false);
     }
