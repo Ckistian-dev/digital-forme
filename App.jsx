@@ -49,6 +49,28 @@ import {
   Cpu
 } from 'lucide-react';
 
+// Google Ads Conversion Tracking
+function gtag_report_conversion(url) {
+  var callback = function () {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  };
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'conversion', {
+        'send_to': 'AW-17907272489/MmjTCJ_6o-0bEKmW7dpC',
+        'value': 1.0,
+        'currency': 'BRL',
+        'event_callback': callback
+    });
+  } else {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  }
+  return false;
+}
+
 // --- Components ---
 
 const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWidth = false }) => {
@@ -243,13 +265,18 @@ const WhatsAppSim = () => {
 
 const FloatingWhatsApp = () => {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Digital%20ForMe.`;
 
   return (
     <a 
-      href={`https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Digital%20ForMe.`}
+      href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[120] hover:scale-110 transition-transform duration-300 group"
+      onClick={(e) => {
+        e.preventDefault();
+        gtag_report_conversion(whatsappUrl);
+      }}
     >
       <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-20"></div>
       <div className="bg-[#25D366] w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-[0_4px_14px_rgba(37,211,102,0.4)] border-2 border-white relative z-10">
@@ -737,6 +764,7 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
   const isElite = variant === 'elite';
   const isHighlighted = variant === 'highlighted';
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(isElite ? "Olá, gostaria de falar com um estrategista sobre o Plano Elite Studio." : `Olá, gostaria de contratar o Plano ${title}.`)}`;
 
   const cardStyles = {
     standard: "backdrop-blur-3xl bg-white/70 border-slate-200 shadow-2xl text-[#1A237E]",
@@ -788,8 +816,11 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
       <Button 
         variant={isElite ? 'glow' : (isHighlighted ? 'secondary' : 'outline')} 
         className="w-full" 
-        href={paymentLink || (isElite ? `https://wa.me/${whatsappNumber}?text=Olá,%20gostaria%20de%20falar%20com%20um%20estrategista%20sobre%20o%20Plano%20Elite%20Studio.` : "#teste")}
-        target={paymentLink || isElite ? "_blank" : "_self"}
+        href={whatsappUrl}
+        onClick={(e) => {
+          e.preventDefault();
+          gtag_report_conversion(whatsappUrl);
+        }}
       >
         {ctaText}
       </Button>
@@ -984,7 +1015,8 @@ export default function App() {
         const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
         if (whatsappNumber) {
           const message = `Olá! Com quem eu falo?`;
-          window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+          const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+          gtag_report_conversion(url);
         }
         setFormState({ description: '', phone: '' });
       }
@@ -994,7 +1026,8 @@ export default function App() {
       const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
       if (whatsappNumber) {
         const message = `Olá! Com quem eu falo?`;
-        window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        gtag_report_conversion(url);
       }
     } finally {
       setIsLoading(false);
