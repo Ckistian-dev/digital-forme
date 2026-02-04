@@ -122,8 +122,8 @@ const StickyTopBar = () => (
   </div>
 );
 
-const CountdownTimer = ({ align = 'center' }) => {
-  const [timeLeft, setTimeLeft] = useState((16 * 3600) + (12 * 60)); 
+const CountdownTimer = () => {
+  const [timeLeft, setTimeLeft] = useState((23 * 3600) + (12 * 60)); 
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -145,12 +145,9 @@ const CountdownTimer = ({ align = 'center' }) => {
 
   const { h, m, s } = formatTime(timeLeft);
 
-  const alignClass = align === 'start' ? 'items-center lg:items-start' : 'items-center';
-  const textAlignClass = align === 'start' ? 'text-center lg:text-left px-0' : 'text-center px-4';
-
   return (
-    <div className={`flex flex-col ${alignClass} gap-3 my-4 md:my-10`}>
-      <p className={`text-[10px] font-black uppercase tracking-[0.2em] text-[#1A237E]/60 mb-2 ${textAlignClass}`}>A oferta de reversão de créditos encerra em:</p>
+    <div className="flex flex-col items-center gap-3 my-4 md:my-10">
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1A237E]/60 mb-2 text-center px-4">A oferta de reversão de créditos encerra em:</p>
       <div className="flex gap-3 md:gap-4">
         {[
           { label: 'Horas', value: h },
@@ -158,7 +155,7 @@ const CountdownTimer = ({ align = 'center' }) => {
           { label: 'Segundos', value: s },
         ].map((item, idx) => (
           <div key={idx} className="flex flex-col items-center">
-            <div className="glass w-12 h-12 md:w-20 md:h-20 rounded-[14px] md:rounded-[22px] flex items-center justify-center border border-[#C5A059]/30 shadow-2xl bg-white/50 backdrop-blur-sm">
+            <div className="glass w-12 h-12 md:w-20 md:h-20 rounded-[14px] md:rounded-[22px] flex items-center justify-center border border-[#C5A059]/30 shadow-2xl">
               <span className="text-lg md:text-4xl font-black text-[#1A237E] tracking-tighter">{item.value}</span>
             </div>
             <span className="text-[8px] md:text-[9px] font-bold uppercase mt-2 text-[#C5A059] tracking-widest">{item.label}</span>
@@ -414,8 +411,8 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-[44px] md:top-[48px] left-0 right-0 z-[90] transition-all duration-700 px-2 md:px-6 w-full my-5`}>
-        <div className={`max-w-7xl mx-auto h-14 md:h-20 rounded-[20px] md:rounded-[30px] bg-white/20 backdrop-blur-md px-4 md:px-10 flex items-center justify-between transition-all ${isScrolled ? 'shadow-xl translate-y-[-4px] md:translate-y-[-8px] border-[#C5A059]/30 border' : 'py-3 md:py-4'}`}>
+      <nav className={`fixed top-[40px] md:top-[48px] left-0 right-0 z-[90] transition-all duration-700 px-2 md:px-6 w-full my-5`}>
+        <div className={`max-w-7xl mx-auto h-14 md:h-20 rounded-[20px] md:rounded-[30px] bg-white/95 px-4 md:px-10 flex items-center justify-between transition-all ${isScrolled ? 'shadow-xl translate-y-[-4px] md:translate-y-[-8px] border-[#C5A059]/30 border' : 'py-3 md:py-4'}`}>
           <a href="#inicio" className="flex items-center gap-2 relative z-[100]">
             <span className="font-black text-sm md:text-2xl tracking-tighter text-[#1A237E] leading-tight">
               Digital ForMe <span className="text-[#C5A059] block md:inline text-[10px] md:text-2xl">| CJS Soluções</span>
@@ -922,7 +919,6 @@ const TestimonialsSection = () => {
   return (
     <Section id="depoimentos" className="bg-white relative overflow-hidden border-t border-slate-100">
        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#C5A059]/5 via-transparent to-transparent pointer-events-none"></div>
-       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#C5A059]/5 rounded-full blur-[120px] pointer-events-none"></div>
        
        <FadeIn>
         <div className="text-center mb-12 md:mb-20">
@@ -933,26 +929,23 @@ const TestimonialsSection = () => {
         </div>
       </FadeIn>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {testimonials.map((t, i) => (
           <FadeIn key={i} delay={i * 100} className="h-full">
-            <div className="p-8 rounded-[32px] bg-white border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col relative group hover:-translate-y-2">
+            <div className="p-8 rounded-[32px] bg-slate-50 border border-slate-100 shadow-lg hover:shadow-xl transition-all duration-300 h-full flex flex-col relative group">
               <div className="absolute top-6 right-8 text-[#C5A059]/20 group-hover:text-[#C5A059]/40 transition-colors">
                 <Quote size={40} />
               </div>
               
-              <div className="flex items-center gap-5 mb-6">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-[#C5A059] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                  <img 
-                    src={t.image} 
-                    alt={t.name} 
-                    className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg relative z-10"
-                  />
-                </div>
+              <div className="flex items-center gap-4 mb-6">
+                <img 
+                  src={t.image} 
+                  alt={t.name} 
+                  className="w-12 h-12 rounded-full object-cover border-2 border-[#1A237E] shadow-md"
+                />
                 <div>
-                  <p className="font-bold text-[#1A237E] text-lg">{t.name}</p>
-                  <p className="text-[11px] text-slate-400 uppercase tracking-wider font-bold">{t.role}</p>
+                  <p className="font-bold text-[#1A237E]">{t.name}</p>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">{t.role}</p>
                 </div>
               </div>
               
@@ -1045,116 +1038,37 @@ export default function App() {
       <Navbar />
 
       {/* Hero Section */}
-      <Section className="pt-[120px] md:pt-[200px] relative overflow-hidden min-h-screen flex flex-col justify-center">
-        {/* Mobile Background Image */}
-        <div className="absolute inset-0 lg:hidden z-0">
-            <img 
-                src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80" 
-                alt="Background" 
-                className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px]"></div>
-        </div>
+      <Section className="pt-[110px] md:pt-[260px] text-center relative">
+        <FadeIn direction="down">
+          <h1 className="text-3xl md:text-5xl lg:text-[80px] font-black text-[#1A237E] tracking-tighter mb-4 md:mb-10 max-w-6xl mx-auto leading-[0.95] px-4 mt-5">
+            Transforme seu WhatsApp em uma <span className="text-[#C5A059] block mt-4 gold-text-glow">Máquina de Vendas 24h</span> que atende, qualifica e fecha pedidos sozinho.
+          </h1>
+        </FadeIn>
+        <FadeIn delay={200}>
+          <p className="text-xl md:text-2xl text-[#1A237E]/70 max-w-4xl mx-auto mb-6 md:mb-12 leading-relaxed font-light px-4">
+            Instalação em 15 minutos. Tudo gerenciado por nossa plataforma CRM. <span className="text-[#1A237E] font-extrabold">Comece a lucrar enquanto dorme.</span>
+          </p>
+        </FadeIn>
+        
+        <FadeIn delay={400}>
+          <CountdownTimer />
+        </FadeIn>
 
-        {/* Background Blobs */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#C5A059]/10 rounded-full blur-[120px] -z-10 translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#1A237E]/5 rounded-full blur-[100px] -z-10 -translate-x-1/3 translate-y-1/4 pointer-events-none"></div>
-
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
-          {/* Left Column */}
-          <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
-            <FadeIn direction="down">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1A237E]/5 border border-[#1A237E]/10 text-[#1A237E] text-[10px] font-black uppercase tracking-widest mb-6">
-                <Sparkles size={12} className="text-[#C5A059]" />
-                <span>Nova Tecnologia 2026</span>
-              </div>
-              <h1 className="text-4xl md:text-6xl lg:text-[72px] font-black text-[#1A237E] tracking-tighter mb-6 leading-[1.1] lg:leading-[1]">
-                Transforme seu WhatsApp em uma <span className="text-[#C5A059] inline-block gold-text-glow">Máquina de Vendas</span>
-              </h1>
-            </FadeIn>
-            
-            <FadeIn delay={200}>
-              <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed font-medium max-w-2xl lg:max-w-none">
-                Atenda, qualifique e feche pedidos 24h por dia. <span className="text-[#1A237E] font-extrabold">Comece a lucrar enquanto dorme.</span>
-              </p>
-            </FadeIn>
-            
-            <FadeIn delay={400} className="w-full">
-              <CountdownTimer align="start" />
-            </FadeIn>
-
-            <FadeIn delay={600} className="w-full">
-              <div className="flex flex-col sm:flex-row items-center gap-4 mb-8 w-full justify-center lg:justify-start">
-                <Button variant="glow" href="#planos" className="w-full sm:w-auto animate-pulse hover:animate-none">Ativar meu Especialista</Button>
-                <Button variant="outline" href="#teste" className="w-full sm:w-auto">Simular IA agora</Button>
-              </div>
-              
-              {/* Social Proof */}
-              <div className="flex items-center gap-4 justify-center lg:justify-start">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3].map((i) => (
-                    <img key={i} src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${40 + i}.jpg`} alt="User" className="w-8 h-8 rounded-full border-2 border-white shadow-sm" />
-                  ))}
-                </div>
-                <div className="text-left">
-                  <div className="flex text-[#C5A059] gap-0.5">
-                    {[1,2,3,4,5].map(s => <Star key={s} size={10} fill="currentColor" />)}
-                  </div>
-                  <p className="text-[10px] font-bold text-slate-500"><span className="text-[#1A237E] font-black">+50 empresas</span> confiam</p>
-                </div>
-              </div>
-              
-              <p className="text-[10px] font-bold text-[#1A237E]/40 uppercase tracking-widest mt-6 text-center lg:text-left">
-                ✓ Teste grátis hoje • ✓ Cancele quando quiser
-              </p>
-            </FadeIn>
+        <FadeIn delay={600}>
+          <div className="flex flex-col items-center justify-center gap-8 px-4 mt-8 md:mt-14">
+            <Button variant="glow" href="#planos" className="animate-pulse hover:animate-none">Ativar meu Especialista</Button>
+            <Button variant="outline" href="#teste">Simular IA agora</Button>
           </div>
-
-          {/* Right Column */}
-          <div className="relative hidden lg:block h-full min-h-[600px]">
-             <FadeIn direction="left" delay={300} className="h-full">
-                <div className="relative w-full h-full rounded-[40px] overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition-all duration-700 group">
-                  <img 
-                    src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80" 
-                    alt="Business Growth" 
-                    className="object-cover w-full h-full scale-105 group-hover:scale-110 transition-transform duration-1000"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A237E]/80 via-transparent to-transparent"></div>
-                  
-                  {/* Floating Card 1 */}
-                  <div className="absolute bottom-10 left-10 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-white/50 flex items-center gap-4 animate-bounce" style={{ animationDuration: '3s' }}>
-                    <div className="bg-green-100 p-3 rounded-full text-green-600">
-                      <CheckCircle2 size={24} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Venda Realizada</p>
-                      <p className="text-lg font-black text-[#1A237E]">+R$ 597,00</p>
-                    </div>
-                  </div>
-
-                  {/* Floating Card 2 */}
-                  <div className="absolute top-10 right-10 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-white/50 flex items-center gap-3 animate-pulse" style={{ animationDuration: '4s' }}>
-                    <div className="bg-[#1A237E]/10 p-2 rounded-full text-[#1A237E]">
-                      <MessageSquareText size={20} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Lead Qualificado</p>
-                      <p className="text-sm font-black text-[#1A237E]">Agendamento Confirmado</p>
-                    </div>
-                  </div>
-                </div>
-             </FadeIn>
-          </div>
-        </div>
+          <p className="text-[10px] font-bold text-[#1A237E]/40 uppercase tracking-widest mt-6">
+            ✓ Teste grátis hoje • ✓ Sem cartão de crédito • ✓ Cancele quando quiser
+          </p>
+        </FadeIn>
       </Section>
 
       <TrustSection />
 
       {/* Atendimento 360 Section */}
-      <Section id="como-funciona" className="relative">
-        {/* Background Blob */}
-        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-[#C5A059]/5 rounded-full blur-[100px] -z-10 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-
+      <Section id="como-funciona">
         <div className="max-w-[1100px] mx-auto">
           <FadeIn>
             <div className="text-center mb-8 md:mb-28">
