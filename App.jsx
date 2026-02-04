@@ -104,7 +104,7 @@ const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWid
   return (
     <div
       ref={ref}
-      className={`transition-all duration-1000 ease-out transform ${fullWidth ? 'w-full' : ''} ${
+      className={`transition-all duration-700 ease-out transform ${fullWidth ? 'w-full' : ''} ${
         isVisible ? 'opacity-100 translate-y-0 translate-x-0' : `opacity-0 ${directions[direction]}`
       } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
@@ -335,7 +335,7 @@ const NotificationToast = () => {
 
   return (
     <div className={`fixed bottom-4 left-4 right-auto max-w-[calc(100%_-_120px)] md:max-w-none md:left-8 md:bottom-8 z-[110] transition-all duration-1000 transform ${visible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
-      <div className="backdrop-blur-2xl bg-white/95 px-5 py-4 md:px-7 md:py-5 rounded-[20px] md:rounded-[28px] shadow-[0_30px_70px_rgba(26,35,126,0.22)] border border-[#C5A059]/40 flex items-center gap-4 md:gap-5 relative pr-12 md:pr-14 group w-auto">
+      <div className="bg-white px-5 py-4 md:px-7 md:py-5 rounded-[20px] md:rounded-[28px] shadow-[0_10px_40px_rgba(26,35,126,0.15)] border border-[#C5A059]/40 flex items-center gap-4 md:gap-5 relative pr-12 md:pr-14 group w-auto">
         <button 
           onClick={handleClose}
           className="absolute top-4 right-4 text-[#1A237E]/30 hover:text-[#1A237E] transition-all p-1.5 rounded-full hover:bg-slate-100"
@@ -412,7 +412,7 @@ const Navbar = () => {
   return (
     <>
       <nav className={`fixed top-[40px] md:top-[48px] left-0 right-0 z-[90] transition-all duration-700 px-2 md:px-6 w-full my-5`}>
-        <div className={`max-w-7xl mx-auto h-14 md:h-20 rounded-[20px] md:rounded-[30px] backdrop-blur-3xl bg-white/75 px-4 md:px-10 flex items-center justify-between transition-all ${isScrolled ? 'shadow-2xl translate-y-[-4px] md:translate-y-[-8px] border-[#C5A059]/30 border' : 'py-3 md:py-4'}`}>
+        <div className={`max-w-7xl mx-auto h-14 md:h-20 rounded-[20px] md:rounded-[30px] bg-white/95 px-4 md:px-10 flex items-center justify-between transition-all ${isScrolled ? 'shadow-xl translate-y-[-4px] md:translate-y-[-8px] border-[#C5A059]/30 border' : 'py-3 md:py-4'}`}>
           <a href="#inicio" className="flex items-center gap-2 relative z-[100]">
             <span className="font-black text-sm md:text-2xl tracking-tighter text-[#1A237E] leading-tight">
               Digital ForMe <span className="text-[#C5A059] block md:inline text-[10px] md:text-2xl">| CJS Soluções</span>
@@ -440,8 +440,6 @@ const Navbar = () => {
 
       <div className={`fixed inset-0 z-[88] bg-[#050A24]/95 backdrop-blur-xl transition-all duration-500 flex flex-col items-center justify-center ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-            <div className="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] bg-[#C5A059]/20 blur-[100px] rounded-full"></div>
-            <div className="absolute bottom-[-10%] left-[-10%] w-[300px] h-[300px] bg-[#1A237E]/30 blur-[100px] rounded-full"></div>
          </div>
 
          <div className={`flex flex-col items-center gap-8 w-full max-w-xs transition-all duration-700 delay-100 ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
@@ -531,7 +529,6 @@ const CrmDashboardPreview = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto mb-16 md:mb-24 relative group">
-      <div className="absolute -inset-1 bg-gradient-to-r from-[#C5A059] to-[#1A237E] rounded-[24px] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
       <div className="relative bg-white rounded-[20px] overflow-hidden border border-slate-200 shadow-2xl flex text-left font-sans h-[600px] md:h-[700px]">
         
         {/* Sidebar (App Nav) */}
@@ -767,8 +764,8 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(isElite ? "Olá, gostaria de falar com um estrategista sobre o Plano Elite Studio." : `Olá, gostaria de contratar o Plano ${title}.`)}`;
 
   const cardStyles = {
-    standard: "backdrop-blur-3xl bg-white/70 border-slate-200 shadow-2xl text-[#1A237E]",
-    highlighted: "backdrop-blur-3xl bg-white/80 border-[#C5A059]/40 shadow-2xl scale-105 z-10 text-[#1A237E]",
+    standard: "bg-white border-slate-200 shadow-2xl text-[#1A237E]",
+    highlighted: "bg-white border-[#C5A059]/40 shadow-2xl scale-105 z-10 text-[#1A237E]",
     elite: "bg-[#050A24] border-2 border-[#C5A059] shadow-[0_40px_100px_rgba(5,10,36,0.5)] text-white"
   };
 
@@ -1036,12 +1033,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen overflow-x-hidden selection:bg-[#C5A059] selection:text-white" id="inicio">
-      <style>{`
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-        @keyframes float-delayed { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        .animate-float-delayed { animation: float-delayed 7s ease-in-out 3s infinite; }
-      `}</style>
       <StickyTopBar />
       <NotificationToast />
       <FloatingWhatsApp />
@@ -1097,7 +1088,6 @@ export default function App() {
 
           <div className="grid md:grid-cols-2 gap-16 relative items-stretch">
             {/* Connection Visual */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#C5A059]/15 blur-[120px] rounded-full hidden md:block animate-pulse"></div>
             <FadeIn delay={300} className="absolute top-1/2 left-[calc(50%-1.75rem)] -translate-y-1/2 z-10 hidden md:block">
               <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-2xl border border-slate-100">
                 <RefreshCcw className="text-[#C5A059] animate-spin" style={{ animationDuration: '7s' }} size={28} />
@@ -1106,7 +1096,7 @@ export default function App() {
 
             {/* ATENDE.AI */}
             <FadeIn direction="left" className="h-full">
-            <div className="backdrop-blur-3xl bg-white/70 p-6 md:p-14 rounded-[32px] md:rounded-[64px] border border-slate-200 shadow-2xl flex flex-col items-center text-center transform transition-all hover:scale-[1.03] hover:border-[#C5A059]/40 hover:shadow-3xl h-full">
+            <div className="bg-white p-6 md:p-14 rounded-[32px] md:rounded-[64px] border border-slate-200 shadow-2xl flex flex-col items-center text-center transform transition-all hover:scale-[1.03] hover:border-[#C5A059]/40 hover:shadow-3xl h-full">
               <div className="w-24 h-24 rounded-[32px] bg-[#1A237E] flex items-center justify-center text-[#C5A059] mb-12 shadow-2xl border border-white/10">
                 <BrainCircuit size={48} />
               </div>
@@ -1145,7 +1135,7 @@ export default function App() {
 
             {/* PROSPECT.AI */}
             <FadeIn direction="right" className="h-full">
-            <div className="backdrop-blur-3xl bg-white/70 p-6 md:p-14 rounded-[32px] md:rounded-[64px] border border-slate-200 shadow-2xl flex flex-col items-center text-center transform transition-all hover:scale-[1.03] hover:border-[#C5A059]/40 hover:shadow-3xl h-full">
+            <div className="bg-white p-6 md:p-14 rounded-[32px] md:rounded-[64px] border border-slate-200 shadow-2xl flex flex-col items-center text-center transform transition-all hover:scale-[1.03] hover:border-[#C5A059]/40 hover:shadow-3xl h-full">
               <div className="w-24 h-24 rounded-[32px] bg-[#C5A059] flex items-center justify-center text-white mb-12 shadow-2xl border border-white/10">
                 <Target size={48} />
               </div>
@@ -1264,7 +1254,7 @@ export default function App() {
 
         {/* Custo Justo Refinement Note */}
         <FadeIn delay={700}>
-          <div className="max-w-4xl mx-auto backdrop-blur-3xl bg-[#C5A059]/5 border border-[#C5A059]/20 rounded-[32px] p-8 md:p-10 shadow-2xl text-center">
+          <div className="max-w-4xl mx-auto bg-white border border-[#C5A059]/20 rounded-[32px] p-8 md:p-10 shadow-2xl text-center">
             <p className="text-base md:text-lg text-[#1A237E] font-medium leading-relaxed italic">
               <span className="text-[#C5A059] font-black uppercase tracking-widest block mb-2 text-sm">ESCALA SEM SUSTO</span>
               Sua mensalidade licencia nossa infraestrutura de IA de elite, capaz de gerenciar contextos gigantes e catálogos com milhares de produtos sem travar sua operação. Como condição especial, revertemos até 100% deste valor em créditos de conversa e, se sua escala superar o saldo garantido, você continua operando via cobrança justa por volume excedente, com total transparência e previsibilidade.
@@ -1276,9 +1266,7 @@ export default function App() {
       {/* Simulation Form */}
       <Section id="teste">
         <FadeIn>
-        <div className="max-w-5xl mx-auto backdrop-blur-3xl bg-white/70 rounded-[40px] md:rounded-[80px] p-8 md:p-28 shadow-[0_80px_160px_-40px_rgba(26,35,126,0.15)] relative overflow-hidden border border-[#C5A059]/40 animate-float-delayed">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#C5A059]/10 blur-[150px] -z-10"></div>
-          
+        <div className="max-w-5xl mx-auto bg-white rounded-[40px] md:rounded-[80px] p-8 md:p-28 shadow-[0_80px_160px_-40px_rgba(26,35,126,0.15)] relative overflow-hidden border border-[#C5A059]/40">
           <div className="text-center mb-10 md:mb-20">
             <h2 className="text-3xl md:text-5xl lg:text-7xl font-black text-[#1A237E] mb-8 tracking-tighter text-center mx-auto leading-[0.85]">Simule o Atende.AI <span className="text-[#C5A059] gold-text-glow block mt-6">Agora</span></h2>
             <p className="text-xl md:text-2xl text-slate-500 font-light max-w-3xl mx-auto leading-relaxed mt-10">Veja como nossa inteligência artificial integrada ao CRM atende e encanta seus clientes nessa simulação em tempo real.</p>
