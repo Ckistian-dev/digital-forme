@@ -760,7 +760,7 @@ const CrmDashboardPreview = () => {
   );
 };
 
-const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "", percent = "", description = "", ctaText = "Teste Grátis", popular = false, savings = "", dailyCost = "", paymentLink }) => {
+const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "", percent = "", offerText = "", description = "", ctaText = "Teste Grátis", popular = false, savings = "", dailyCost = "", paymentLink }) => {
   const isElite = variant === 'elite';
   const isHighlighted = variant === 'highlighted';
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
@@ -772,23 +772,87 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
     elite: "bg-[#050A24] border-2 border-[#C5A059] shadow-[0_40px_100px_rgba(5,10,36,0.5)] text-white"
   };
 
+  if (isElite) {
+    return (
+      <div className={`p-6 md:p-10 rounded-[32px] md:rounded-[56px] flex flex-col lg:flex-row h-full transition-all duration-700 border text-center lg:text-left items-center lg:items-center relative gap-8 lg:gap-12 ${cardStyles[variant]}`}>
+        {popular && (
+          <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#1A237E] text-[#C5A059] px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-xl border border-[#C5A059]/40 z-20">
+            Popular
+          </div>
+        )}
+        
+        <div className="flex-1">
+          <div className={`inline-block px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6 border shadow-lg ${isElite ? 'bg-[#C5A059] text-white border-[#C5A059]/60' : 'bg-[#C5A059]/10 text-[#C5A059] border-[#C5A059]/30'}`}>
+            OFERTA: <span className={`text-xl ${isElite ? 'text-white' : 'text-[#C5A059]'} gold-text-glow ml-2`}>{percent}</span> REVERTIDO EM CRÉDITOS NO 1º ANO
+          </div>
+          <h3 className={`text-3xl md:text-4xl font-black mb-2 tracking-tighter leading-none`}>{title}</h3>
+          <p className={`text-[10px] font-bold uppercase tracking-[0.4em] mb-4 ${isElite ? 'text-[#C5A059]' : 'text-slate-400'}`}>{subtitle}</p>
+          {description && <p className={`text-xs font-medium leading-relaxed px-4 lg:px-0 ${isElite ? 'text-blue-100/60' : 'text-slate-500'}`}>{description}</p>}
+        </div>
+
+        <div className="flex-1 lg:border-l lg:border-[#C5A059]/20 lg:pl-10 w-full">
+          <ul className="space-y-4 w-full text-left">
+            {features.map((feature, i) => (
+              <li key={i} className="flex items-start gap-4 text-[13px] font-bold italic leading-tight">
+                <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${isElite ? 'text-[#C5A059]' : 'text-[#C5A059]'}`} />
+                <span className={isElite ? 'text-blue-50' : 'text-slate-600'}>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center lg:items-end gap-6">
+          <div className="flex flex-col items-center lg:items-end">
+            {savings && (
+              <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
+                {savings}
+              </div>
+            )}
+            <div className="flex items-baseline gap-2">
+              {isElite && <span className="text-sm font-bold opacity-60 mr-1 text-[#C5A059]">a partir de</span>}
+              <span className="text-xl font-bold opacity-50">R$</span>
+              <span className="text-4xl md:text-7xl font-black tracking-tighter">{price}</span>
+              <span className="text-lg font-bold opacity-50">/mês</span>
+            </div>
+            {isElite && <p className="text-[11px] font-black uppercase tracking-[0.2em] mt-2 text-[#C5A059] animate-pulse">(Vagas Limitadas)</p>}
+            {dailyCost && <p className="text-[11px] font-bold text-slate-400 mt-2">{dailyCost}</p>}
+          </div>
+
+          <Button 
+            variant={isElite ? 'glow' : (isHighlighted ? 'secondary' : 'outline')} 
+            className="w-full lg:w-auto lg:px-12" 
+            href={whatsappUrl}
+            onClick={(e) => {
+              e.preventDefault();
+              gtag_report_conversion(whatsappUrl);
+            }}
+          >
+            {ctaText}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`p-6 md:p-10 rounded-[32px] md:rounded-[56px] flex flex-col h-full transition-all duration-700 border text-center items-center relative ${cardStyles[variant]}`}>
+    <div className={`p-6 md:p-8 rounded-[32px] md:rounded-[56px] flex flex-col h-full transition-all duration-700 border text-center items-center relative ${cardStyles[variant]}`}>
       {popular && (
         <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#1A237E] text-[#C5A059] px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-xl border border-[#C5A059]/40 z-20">
           Popular
         </div>
       )}
-      <div className="mb-8">
-        <div className={`inline-block px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6 border shadow-lg ${isElite ? 'bg-[#C5A059] text-white border-[#C5A059]/60' : 'bg-[#C5A059]/10 text-[#C5A059] border-[#C5A059]/30'}`}>
-          OFERTA: <span className={`text-xl ${isElite ? 'text-white' : 'text-[#C5A059]'} gold-text-glow ml-2`}>{percent}</span> REVERTIDO EM CRÉDITOS NO 1º ANO
+      <div className="mb-6">
+        <div className={`inline-block px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4 border shadow-lg ${isElite ? 'bg-[#C5A059] text-white border-[#C5A059]/60' : 'bg-[#C5A059]/10 text-[#C5A059] border-[#C5A059]/30'}`}>
+          {offerText ? offerText : (
+            <>OFERTA: <span className={`text-xl ${isElite ? 'text-white' : 'text-[#C5A059]'} gold-text-glow ml-2`}>{percent}</span> REVERTIDO EM CRÉDITOS NO 1º ANO</>
+          )}
         </div>
         <h3 className={`text-3xl md:text-4xl font-black mb-2 tracking-tighter leading-none`}>{title}</h3>
         <p className={`text-[10px] font-bold uppercase tracking-[0.4em] mb-4 ${isElite ? 'text-[#C5A059]' : 'text-slate-400'}`}>{subtitle}</p>
         {description && <p className={`text-xs font-medium leading-relaxed px-4 ${isElite ? 'text-blue-100/60' : 'text-slate-500'}`}>{description}</p>}
       </div>
       
-      <div className="flex flex-col items-center mb-10">
+      <div className="flex flex-col items-center mb-8">
         {savings && (
            <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
              {savings}
@@ -804,7 +868,7 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
         {dailyCost && <p className="text-[11px] font-bold text-slate-400 mt-2">{dailyCost}</p>}
       </div>
 
-      <ul className="space-y-4 mb-14 flex-grow w-full text-left">
+      <ul className="space-y-3 mb-8 flex-grow w-full text-left">
         {features.map((feature, i) => (
           <li key={i} className="flex items-start gap-4 text-[13px] font-bold italic leading-tight">
             <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${isElite ? 'text-[#C5A059]' : 'text-[#C5A059]'}`} />
@@ -1267,8 +1331,24 @@ export default function App() {
           </div>
         </FadeIn>
         
-        <div className="grid lg:grid-cols-3 gap-8 max-w-[1280px] mx-auto px-6 mb-8 md:mb-16 items-stretch">
-          <FadeIn delay={100} className="h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1400px] mx-auto px-4 md:px-6 mb-8 md:mb-16 items-stretch">
+          <FadeIn delay={0} className="h-full">
+          <PlanCard 
+            title="CRM Start"
+            subtitle="Gestão de Leads"
+            price="97"
+            offerText="CRM COMPLETO, CRÉDITOS PARA TESTE DE IA INCLUSOS"
+            ctaText="Contratar Agora"
+            features={[
+              "Plataforma CRM Completa",
+              "Gestão de Funil de Vendas",
+              "Integração WhatsApp Oficial",
+              "Créditos para Teste de IA",
+              "Suporte IA"
+            ]}
+          />
+          </FadeIn>
+          <FadeIn delay={150} className="h-full">
           <PlanCard 
             title="Essencial"
             subtitle="Atendimento Receptivo"
@@ -1293,21 +1373,19 @@ export default function App() {
             variant="highlighted"
             popular={true}
             percent="100%"
-            savings="Economize R$ 2.000/ano"
             dailyCost="Menos de R$ 20/dia"
             ctaText="Contratar Agora"
             paymentLink={import.meta.env.VITE_ASAAS_DOMINANCE_URL}
             features={[
               "Tudo do Plano Essencial",
-              "Motor Prospect.AI Ativo",
-              "Reativação Automática de Base",
+              "Acesso antecipado Prospect AI",
               "Prospecção de Novos Leads",
               "100% Reversão em Créditos",
               "Suporte Prioritário"
             ]}
           />
           </FadeIn>
-          <FadeIn delay={500} className="h-full">
+          <FadeIn delay={500} className="h-full lg:col-span-3">
           <PlanCard 
             title="Elite Studio"
             subtitle="Diamond Insider"
