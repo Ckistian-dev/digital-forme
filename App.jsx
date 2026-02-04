@@ -1113,7 +1113,7 @@ export default function App() {
           {/* Right Column */}
           <div className="relative hidden lg:block h-full min-h-[600px]">
              <FadeIn direction="left" delay={300} className="h-full">
-                <div className="relative w-full h-full rounded-[40px] overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition-all duration-700 group">
+                <div className="relative w-full h-full rounded-[40px] overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition-all duration-700 group [mask-image:radial-gradient(white,black)]">
                   <img 
                     src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80" 
                     alt="Business Growth" 
