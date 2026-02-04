@@ -117,7 +117,7 @@ const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWid
 const StickyTopBar = () => (
   <div className="fixed top-0 left-0 right-0 z-[100] bg-[#1A237E] py-2 px-4 border-b border-[#C5A059]/30 text-center min-h-[40px] max-w-full flex items-center justify-center">
     <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-[#C5A059] leading-tight">
-      ⚡ Oportunidade de Lançamento: Vagas LIMITADAS com Investimento Revertido em 100% Créditos.
+      Oportunidade de Lançamento: Vagas LIMITADAS com Investimento Revertido em 100% de Créditos.
     </p>
   </div>
 );
@@ -414,7 +414,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-[44px] md:top-[48px] left-0 right-0 z-[90] transition-all duration-700 px-2 md:px-6 w-full my-5`}>
+      <nav className={`fixed top-[36px] md:top-[48px] left-0 right-0 z-[90] transition-all duration-700 px-2 md:px-6 w-full my-5`}>
         <div className={`max-w-7xl mx-auto h-14 md:h-20 rounded-[20px] md:rounded-[30px] bg-white/20 backdrop-blur-md px-4 md:px-10 flex items-center justify-between transition-all ${isScrolled ? 'shadow-xl translate-y-[-4px] md:translate-y-[-8px] border-[#C5A059]/30 border' : 'py-3 md:py-4'}`}>
           <a href="#inicio" className="flex items-center gap-2 relative z-[100]">
             <span className="font-black text-sm md:text-2xl tracking-tighter text-[#1A237E] leading-tight">
