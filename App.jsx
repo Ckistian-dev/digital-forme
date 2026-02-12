@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import api from './axiosConfig';
 import { 
@@ -46,14 +46,28 @@ import {
   Phone,
   Tag,
   Edit,
-  Cpu
+  Cpu,
+  ChevronLeft,
+  Plus
 } from 'lucide-react';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { subDays, startOfMonth, endOfMonth, format, addDays } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
+registerLocale('pt-BR', ptBR);
 
 // Google Ads Conversion Tracking
 function gtag_report_conversion(url) {
   var callback = function () {
     if (typeof(url) != 'undefined') {
-      window.location = url;
+      // Open in a new tab for WhatsApp links
+      if (url.startsWith('https://wa.me/')) {
+        window.open(url, '_blank');
+      } else {
+        window.location = url;
+      }
     }
   };
   if (typeof window.gtag === 'function') {
@@ -65,7 +79,7 @@ function gtag_report_conversion(url) {
     });
   } else {
     if (typeof(url) != 'undefined') {
-      window.location = url;
+      window.open(url, '_blank');
     }
   }
   return false;
@@ -121,150 +135,6 @@ const StickyTopBar = () => (
     </p>
   </div>
 );
-
-const CountdownTimer = ({ align = 'center' }) => {
-  const [timeLeft, setTimeLeft] = useState((16 * 3600) + (12 * 60)); 
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : (23 * 3600) + (12 * 60)));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = (seconds) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return {
-      h: h.toString().padStart(2, '0'),
-      m: m.toString().padStart(2, '0'),
-      s: s.toString().padStart(2, '0'),
-    };
-  };
-
-  const { h, m, s } = formatTime(timeLeft);
-
-  const alignClass = align === 'start' ? 'items-center lg:items-start' : 'items-center';
-  const textAlignClass = align === 'start' ? 'text-center lg:text-left px-0' : 'text-center px-4';
-
-  return (
-    <div className={`flex flex-col ${alignClass} gap-3 my-4 md:my-10`}>
-      <p className={`text-[10px] font-black uppercase tracking-[0.2em] text-[#1A237E]/60 mb-2 ${textAlignClass}`}>A oferta de reversão de créditos encerra em:</p>
-      <div className="flex gap-3 md:gap-4">
-        {[
-          { label: 'Horas', value: h },
-          { label: 'Minutos', value: m },
-          { label: 'Segundos', value: s },
-        ].map((item, idx) => (
-          <div key={idx} className="flex flex-col items-center">
-            <div className="glass w-12 h-12 md:w-20 md:h-20 rounded-[14px] md:rounded-[22px] flex items-center justify-center border border-[#C5A059]/30 shadow-2xl bg-white/50 backdrop-blur-sm">
-              <span className="text-lg md:text-4xl font-black text-[#1A237E] tracking-tighter">{item.value}</span>
-            </div>
-            <span className="text-[8px] md:text-[9px] font-bold uppercase mt-2 text-[#C5A059] tracking-widest">{item.label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const WhatsAppSim = () => {
-  const scrollRef = useRef(null);
-  const [messages, setMessages] = useState([]);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const script = [
-    { sender: 'client', text: 'Boa noite! Vi o anúncio de vocês no Instagram agora. Ainda tem alguém aí?' },
-    { sender: 'ai', text: 'Com certeza! 🚀 Aqui na Digital ForMe o atendimento nunca para. Como posso ajudar seu negócio a escalar agora mesmo?' },
-    { sender: 'client', text: 'Caramba, que velocidade! Mas esse atendimento não fica muito robótico? Tenho receio dos meus clientes não gostarem.' },
-    { sender: 'ai', text: 'Entendo perfeitamente! Nossa IA não é um chatbot comum; ela estuda seus manuais e aprende seu tom de voz exato. É um atendimento humanizado que quebra objeções e tira dúvidas de forma instantânea, como se fosse você mesmo.' },
-    { sender: 'client', text: 'Interessante... e como funciona essa questão do investimento revertido em créditos? É real ou tem pegadinha?' },
-    { sender: 'ai', text: 'Totalmente real! Cada centavo da sua mensalidade volta como saldo para você conversar com novos leads. Você investe na tecnologia e ganha o fôlego comercial que precisa sem taxas ocultas!' },
-    { sender: 'client', text: 'Gostei da transparência. Vou querer testar essa simulação viva então.' },
-    { sender: 'ai', text: 'Excelente decisão! Vamos colocar seu negócio no topo. Me diga, qual o nome da sua empresa?' }
-  ];
-
-  useEffect(() => {
-    setMessages([]);
-    let currentIdx = 0;
-    let timeoutId;
-    let isMounted = true;
-    
-    const runSimulation = () => {
-      if (!isMounted) return;
-
-      if (currentIdx < script.length) {
-        const msg = script[currentIdx];
-        
-        if (msg.sender === 'client') {
-          setMessages(prev => [...prev, msg]);
-          currentIdx++;
-          timeoutId = setTimeout(runSimulation, 1500);
-        } else {
-          setIsTyping(true);
-          timeoutId = setTimeout(() => {
-            if (!isMounted) return;
-            setIsTyping(false);
-            setMessages(prev => [...prev, msg]);
-            currentIdx++;
-            timeoutId = setTimeout(runSimulation, 2500);
-          }, 4000);
-        }
-      } else {
-        timeoutId = setTimeout(() => {
-          if (!isMounted) return;
-          setMessages([]);
-          currentIdx = 0;
-          runSimulation();
-        }, 5000);
-      }
-    };
-
-    runSimulation();
-
-    return () => {
-      isMounted = false;
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
-  }, [messages, isTyping]);
-
-  return (
-    <div ref={scrollRef} className="absolute inset-0 p-4 md:p-10 flex flex-col gap-3 md:gap-5 overflow-y-auto no-scrollbar">
-      <div className="wa-background"></div>
-      {messages.map((msg, i) => (
-        <div 
-          key={i} 
-          className={`max-w-[85%] md:max-w-[75%] p-4 md:p-5 rounded-[22px] text-sm md:text-[15px] shadow-xl animate-fade-in-up relative z-10 ${
-            msg.sender === 'client' 
-              ? 'bg-white self-start rounded-tl-none border border-slate-100 text-slate-800' 
-              : 'bg-[#DCF8C6] self-end rounded-tr-none border border-[#bede9f] text-slate-900 shadow-[#DCF8C6]/20'
-          }`}
-        >
-          <p className="font-medium leading-[1.6]">{msg.text}</p>
-        </div>
-      ))}
-      {isTyping && (
-        <div className="bg-[#DCF8C6] self-end rounded-[22px] rounded-tr-none border border-[#bede9f] p-4 shadow-xl relative z-10 animate-fade-in-up">
-          <div className="flex gap-1.5">
-            <span className="typing-dot"></span>
-            <span className="typing-dot"></span>
-            <span className="typing-dot"></span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 const FloatingWhatsApp = () => {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
@@ -426,11 +296,11 @@ const Navbar = () => {
             <a href="#como-funciona" className="text-xs font-black text-[#1A237E]/70 hover:text-[#C5A059] transition-all uppercase tracking-[0.2em]">Como Funciona</a>
             <a href="#planos" className="text-xs font-black text-[#1A237E]/70 hover:text-[#C5A059] transition-all uppercase tracking-[0.2em]">Valores</a>
             <a href="#faq" className="text-xs font-black text-[#1A237E]/70 hover:text-[#C5A059] transition-all uppercase tracking-[0.2em]">FAQ</a>
-            <Button variant="secondary" href="#teste" className="py-3 px-8 text-[11px] mx-0 rounded-[18px]">Teste Grátis</Button>
+            <Button variant="glow" href="#teste" className="py-3 px-8 text-[11px] mx-0 rounded-[18px] shadow-[#C5A059]/30">Teste Grátis</Button>
           </div>
 
           <div className="lg:hidden flex items-center gap-3 relative z-[100]">
-             <Button variant="secondary" href="#teste" className="py-[10px] px-4 text-[8px] mx-0 rounded-[12px] shadow-none">Teste Grátis</Button>
+             <Button variant="glow" href="#teste" className="py-[10px] px-4 text-[8px] mx-0 rounded-[12px] shadow-none">Teste Grátis</Button>
              <button 
                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 ${isMobileMenuOpen ? 'bg-[#1A237E] text-white rotate-90' : 'bg-[#1A237E]/5 text-[#1A237E]'}`}
@@ -464,7 +334,7 @@ const Navbar = () => {
 
             <div className="mt-8 w-full">
               <Button variant="glow" href="#teste" onClick={() => setIsMobileMenuOpen(false)} className="w-full py-6 text-base">
-                Começar Agora
+                Iniciar Demonstração
               </Button>
               <p className="text-white/30 text-[10px] text-center mt-6 uppercase tracking-widest">
                 CJS Soluções
@@ -493,346 +363,18 @@ const TrustSection = () => (
   </div>
 );
 
-const ObjectionHandling = () => (
-  <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-10 md:mb-20">
-    {[
-      { icon: MessageSquare, title: "Parece humano?", text: "Sim, usamos tecnologia de linguagem natural avançada." },
-      { icon: Zap, title: "É difícil configurar?", text: "Não, nossa plataforma CRM é intuitiva e fazemos o setup para você." },
-      { icon: Target, title: "Funciona no meu nicho?", text: "A IA aprende sobre qualquer produto ou serviço." }
-    ].map((item, i) => (
-      <div key={i} className="flex flex-col items-center text-center p-6 rounded-[32px] bg-white/60 border border-slate-100 shadow-lg backdrop-blur-sm">
-        <div className="w-12 h-12 bg-[#1A237E]/5 rounded-2xl flex items-center justify-center text-[#1A237E] mb-4">
-          <item.icon size={24} />
-        </div>
-        <h4 className="text-lg font-black text-[#1A237E] mb-2">{item.title}</h4>
-        <p className="text-sm text-slate-500 font-medium leading-relaxed">{item.text}</p>
-      </div>
-    ))}
-  </div>
-);
-
-const CrmDashboardPreview = () => {
-  const contacts = [
-    { id: 1, name: 'João Silva', phone: '+55 11 99999-9999', msg: 'Gostaria de saber mais sobre o plano.', time: '10:30', unread: 2, status: 'Novo', color: '#3b82f6', tags: [{name: 'Hot Lead', color: '#ef4444'}] },
-    { id: 2, name: 'Maria Oliveira', phone: '+55 21 98888-8888', msg: 'Obrigado pelo atendimento!', time: 'Ontem', unread: 0, status: 'Concluído', color: '#22c55e', tags: [] },
-    { id: 3, name: 'Pedro Santos', phone: '+55 31 97777-7777', msg: 'Qual o valor da integração?', time: 'Ontem', unread: 0, status: 'Aguardando', color: '#eab308', tags: [{name: 'Dúvida', color: '#a855f7'}] },
-  ];
-  const [activeContactId, setActiveContactId] = useState(1);
-  const activeContact = contacts.find(c => c.id === activeContactId);
-  const [isTyping, setIsTyping] = useState(true);
-  const [showMobileProfile, setShowMobileProfile] = useState(false);
-
-  useEffect(() => {
-    setIsTyping(true);
-    const timer = setTimeout(() => {
-      setIsTyping(false);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [activeContactId]);
-
-  return (
-    <div className="w-full max-w-7xl mx-auto mb-16 md:mb-24 relative group">
-      <div className="relative bg-white rounded-[20px] overflow-hidden border border-slate-200 shadow-2xl flex text-left font-sans h-[600px] md:h-[700px]">
-        
-        {/* Sidebar (App Nav) */}
-        <aside className="w-16 md:w-20 bg-[#0f172a] text-white flex flex-col items-center py-6 gap-6 flex-shrink-0 z-20">
-            <div className="bg-blue-600/20 w-10 h-10 flex items-center justify-center rounded-xl text-[#C5A059] mb-4">
-                <span className="font-black text-lg md:text-xl">A</span>
-            </div>
-            
-            <nav className="flex flex-col gap-4 w-full px-2">
-                <div className="p-3 rounded-xl text-slate-400 hover:bg-white/10 cursor-pointer transition-colors flex justify-center">
-                    <LayoutDashboard size={22} />
-                </div>
-                <div className="p-3 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-900/50 cursor-pointer transition-colors flex justify-center">
-                    <MessageSquareText size={22} />
-                </div>
-                <div className="p-3 rounded-xl text-slate-400 hover:bg-white/10 cursor-pointer transition-colors flex justify-center">
-                    <Archive size={22} />
-                </div>
-                <div className="p-3 rounded-xl text-slate-400 hover:bg-white/10 cursor-pointer transition-colors flex justify-center">
-                    <Bot size={22} />
-                </div>
-            </nav>
-
-            <div className="mt-auto p-3 text-slate-400 hover:text-white cursor-pointer">
-                <LogOut size={22} />
-            </div>
-        </aside>
-
-        {/* Chat Interface Container */}
-        <div className="flex-1 flex bg-gray-50 relative w-full overflow-hidden">
-            
-            {/* Contact List Sidebar */}
-            <div className="w-72 bg-white border-r border-gray-200 flex flex-col hidden md:flex">
-                <div className="p-4 border-b border-gray-100">
-                    <div className="relative mb-4">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                        <input type="text" placeholder="Buscar conversa..." className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all" />
-                    </div>
-                    <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                        <button className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full whitespace-nowrap border border-blue-100">Todos</button>
-                        <button className="px-3 py-1 bg-white text-gray-500 text-xs font-bold rounded-full whitespace-nowrap border border-gray-200 hover:bg-gray-50">Não lidos</button>
-                        <button className="px-3 py-1 bg-white text-gray-500 text-xs font-bold rounded-full whitespace-nowrap border border-gray-200 hover:bg-gray-50">Aguardando</button>
-                    </div>
-                </div>
-                <div className="flex-1 overflow-y-auto">
-                    {contacts.map(contact => (
-                        <div 
-                            key={contact.id} 
-                            onClick={() => setActiveContactId(contact.id)}
-                            className={`p-4 border-b border-gray-50 cursor-pointer transition-colors hover:bg-gray-50 ${activeContactId === contact.id ? 'bg-blue-50/60 border-l-4 border-l-blue-500' : 'border-l-4 border-l-transparent'}`}
-                        >
-                            <div className="flex gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-600 font-bold flex-shrink-0">
-                                    {contact.name.substring(0,2).toUpperCase()}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex justify-between items-start mb-1">
-                                        <h4 className={`text-sm truncate ${activeContactId === contact.id ? 'font-bold text-gray-900' : 'font-semibold text-gray-700'}`}>{contact.name}</h4>
-                                        <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{contact.time}</span>
-                                    </div>
-                                    <p className="text-xs text-gray-500 truncate mb-2">{contact.msg}</p>
-                                    <div className="flex items-center gap-2">
-                                        <span className="px-2 py-0.5 text-[10px] rounded-full font-bold" style={{ backgroundColor: `${contact.color}20`, color: contact.color }}>
-                                            {contact.status}
-                                        </span>
-                                        {contact.unread > 0 && (
-                                            <span className="w-4 h-4 bg-blue-500 text-white text-[10px] flex items-center justify-center rounded-full font-bold ml-auto">
-                                                {contact.unread}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Main Chat Area */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#efeae2] relative">
-                {/* Chat Header */}
-                <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 flex-shrink-0 z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold">
-                            {activeContact.name.substring(0,2).toUpperCase()}
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-gray-800 text-sm md:text-base">{activeContact.name}</h3>
-                            <p className="text-xs text-gray-500">{activeContact.phone}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2 md:gap-4 text-gray-400">
-                        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Search size={20} /></button>
-                        <button onClick={() => setShowMobileProfile(true)} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><MoreVertical size={20} /></button>
-                    </div>
-                </header>
-
-                {/* Messages Body */}
-                <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6" style={{ backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")' }}>
-                    <div className="flex justify-center">
-                        <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-medium text-gray-500 shadow-sm">Hoje</span>
-                    </div>
-
-                    {/* Bot Message */}
-                    <div className="flex justify-end">
-                        <div className="bg-[#d9fdd3] p-3 md:p-4 rounded-xl rounded-tr-none shadow-sm max-w-[85%] md:max-w-[70%] text-sm text-gray-800 relative group">
-                            <p className="leading-relaxed">Olá {activeContact.name.split(' ')[0]}! 👋 Vi que você se interessou pelo nosso plano Elite. Posso tirar alguma dúvida sobre a implementação?</p>
-                            <div className="flex justify-end items-center gap-1 mt-1">
-                                <span className="text-[10px] text-gray-500">10:28</span>
-                                <CheckCircle2 size={12} className="text-blue-500" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* User Message */}
-                    <div className="flex justify-start">
-                        <div className="bg-white p-3 md:p-4 rounded-xl rounded-tl-none shadow-sm max-w-[85%] md:max-w-[70%] text-sm text-gray-800 relative">
-                            <p className="leading-relaxed">{activeContact.msg}</p>
-                            <span className="text-[10px] text-gray-400 block text-right mt-1">10:29</span>
-                        </div>
-                    </div>
-
-                    {/* Bot Reply (Simulated Typing/Sent) */}
-                    <div className="flex justify-end">
-                        {isTyping ? (
-                            <div className="bg-[#d9fdd3] p-4 rounded-xl rounded-tr-none shadow-sm relative animate-pulse">
-                                <div className="flex gap-1.5 items-center">
-                                    <div className="w-1.5 h-1.5 bg-green-600/50 rounded-full animate-bounce"></div>
-                                    <div className="w-1.5 h-1.5 bg-green-600/50 rounded-full animate-bounce" style={{animationDelay: '0.15s'}}></div>
-                                    <div className="w-1.5 h-1.5 bg-green-600/50 rounded-full animate-bounce" style={{animationDelay: '0.3s'}}></div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="bg-[#d9fdd3] p-3 md:p-4 rounded-xl rounded-tr-none shadow-sm max-w-[85%] md:max-w-[70%] text-sm text-gray-800 relative animate-fade-in-up">
-                                <p className="leading-relaxed">É 100% nativa! 🚀 Você conecta seu WhatsApp e o CRM já começa a atender automaticamente todos os seus leads.</p>
-                                <div className="flex justify-end items-center gap-1 mt-1">
-                                    <span className="text-[10px] text-gray-500">10:30</span>
-                                    <CheckCircle2 size={12} className="text-gray-400" />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Chat Footer */}
-                <footer className="p-3 md:p-4 bg-[#f0f2f5] border-t border-gray-200 flex items-center gap-2 md:gap-4">
-                    <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full transition-colors"><Paperclip size={20} /></button>
-                    <div className="flex-1 bg-white rounded-xl px-4 py-3 border border-gray-200 flex items-center focus-within:ring-2 focus-within:ring-blue-100 transition-all max-w-[50%]">
-                        <input type="text" placeholder="Digite sua mensagem" className="flex-1 bg-transparent outline-none text-xs text-gray-700 placeholder:text-gray-400" />
-                    </div>
-                    <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full transition-colors"><Mic size={20} /></button>
-                    <button className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"><Send size={18} /></button>
-                </footer>
-            </div>
-
-            {/* Profile Sidebar (Right) */}
-            <div className={`bg-gray-50 border-l border-gray-200 flex-col overflow-y-auto ${showMobileProfile ? 'absolute inset-0 z-20 flex w-full xl:static xl:w-64' : 'hidden xl:flex w-64'}`}>
-                <div className="p-6 flex flex-col items-center border-b border-gray-200 bg-white relative">
-                    {showMobileProfile && (
-                        <button onClick={() => setShowMobileProfile(false)} className="absolute left-4 top-4 p-2 text-gray-400 hover:bg-gray-100 rounded-full xl:hidden">
-                            <X size={20} />
-                        </button>
-                    )}
-                    <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-gray-500 mb-4 shadow-inner">
-                        {activeContact.name.substring(0,2).toUpperCase()}
-                    </div>
-                    <h3 className="font-bold text-lg text-gray-800 text-center">{activeContact.name}</h3>
-                    <p className="text-sm text-gray-500 mb-4">{activeContact.phone}</p>
-                    
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100">
-                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                        <span className="text-xs font-bold text-blue-700">{activeContact.status}</span>
-                    </div>
-                </div>
-
-                <div className="p-5 space-y-6">
-                    <div>
-                        <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                                <Tag size={14} /> Tags
-                            </h4>
-                            <button className="text-blue-600 hover:bg-blue-50 p-1 rounded"><Edit size={12} /></button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {activeContact.tags.length > 0 ? activeContact.tags.map((tag, i) => (
-                                <span key={i} className="px-2 py-1 text-xs font-bold text-white rounded-md shadow-sm" style={{ backgroundColor: tag.color }}>
-                                    {tag.name}
-                                </span>
-                            )) : <span className="text-xs text-gray-400 italic">Sem tags</span>}
-                            <button className="px-2 py-1 bg-gray-200 text-gray-600 text-xs rounded-md font-bold hover:bg-gray-300 transition-colors">+</button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                                <FileText size={14} /> Observações
-                            </h4>
-                            <button className="text-blue-600 hover:bg-blue-50 p-1 rounded"><Edit size={12} /></button>
-                        </div>
-                        <div className="bg-white p-3 rounded-xl border border-gray-200 text-xs text-gray-600 leading-relaxed shadow-sm">
-                            Cliente demonstrou alto interesse na automação de vendas. Agendar reunião de fechamento para amanhã às 14h.
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2 mb-3">
-                            <Cpu size={14} /> Consumo IA
-                        </h4>
-                        <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
-                            <div className="flex justify-between text-xs mb-1">
-                                <span className="text-gray-600">Tokens</span>
-                                <span className="font-bold text-gray-800">1.240</span>
-                            </div>
-                            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                <div className="bg-purple-500 h-full w-[45%]"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "", percent = "", offerText = "", description = "", ctaText = "Teste Grátis", popular = false, savings = "", dailyCost = "", paymentLink }) => {
   const isElite = variant === 'elite';
   const isHighlighted = variant === 'highlighted';
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(isElite ? "Olá, gostaria de falar com um estrategista sobre o Plano Elite Studio." : `Olá, gostaria de contratar o Plano ${title}.`)}`;
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(isElite ? `Olá, gostaria de falar com um estrategista sobre o Plano ${title}.` : `Olá, gostaria de contratar o Plano ${title}.`)}`;
 
   const cardStyles = {
     standard: "bg-white border-slate-200 shadow-2xl text-[#1A237E]",
     highlighted: "bg-white border-[#C5A059]/40 shadow-2xl scale-105 z-10 text-[#1A237E]",
     elite: "bg-[#050A24] border-2 border-[#C5A059] shadow-[0_40px_100px_rgba(5,10,36,0.5)] text-white"
   };
-
-  if (isElite) {
-    return (
-      <div className={`p-6 md:p-10 rounded-[32px] md:rounded-[56px] flex flex-col lg:flex-row h-full transition-all duration-700 border text-center lg:text-left items-center lg:items-center relative gap-8 lg:gap-12 ${cardStyles[variant]}`}>
-        {popular && (
-          <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#1A237E] text-[#C5A059] px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-xl border border-[#C5A059]/40 z-20">
-            Popular
-          </div>
-        )}
-        
-        <div className="flex-1">
-          <div className={`inline-block px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6 border shadow-lg ${isElite ? 'bg-[#C5A059] text-white border-[#C5A059]/60' : 'bg-[#C5A059]/10 text-[#C5A059] border-[#C5A059]/30'}`}>
-            OFERTA: <span className={`text-xl ${isElite ? 'text-white' : 'text-[#C5A059]'} gold-text-glow ml-2`}>{percent}</span> REVERTIDO EM CRÉDITOS NO 1º ANO
-          </div>
-          <h3 className={`text-3xl md:text-4xl font-black mb-2 tracking-tighter leading-none`}>{title}</h3>
-          <p className={`text-[10px] font-bold uppercase tracking-[0.4em] mb-4 ${isElite ? 'text-[#C5A059]' : 'text-slate-400'}`}>{subtitle}</p>
-          {description && <p className={`text-xs font-medium leading-relaxed px-4 lg:px-0 ${isElite ? 'text-blue-100/60' : 'text-slate-500'}`}>{description}</p>}
-        </div>
-
-        <div className="flex-1 lg:border-l lg:border-[#C5A059]/20 lg:pl-10 w-full">
-          <ul className="space-y-4 w-full text-left">
-            {features.map((feature, i) => (
-              <li key={i} className="flex items-start gap-4 text-[13px] font-bold italic leading-tight">
-                <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${isElite ? 'text-[#C5A059]' : 'text-[#C5A059]'}`} />
-                <span className={isElite ? 'text-blue-50' : 'text-slate-600'}>{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center lg:items-end gap-6">
-          <div className="flex flex-col items-center lg:items-end">
-            {savings && (
-              <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
-                {savings}
-              </div>
-            )}
-            <div className="flex items-baseline gap-2">
-              {isElite && <span className="text-sm font-bold opacity-60 mr-1 text-[#C5A059]">a partir de</span>}
-              <span className="text-xl font-bold opacity-50">R$</span>
-              <span className="text-4xl md:text-7xl font-black tracking-tighter">{price}</span>
-              <span className="text-lg font-bold opacity-50">/mês</span>
-            </div>
-            {isElite && <p className="text-[11px] font-black uppercase tracking-[0.2em] mt-2 text-[#C5A059] animate-pulse">(Vagas Limitadas)</p>}
-            {dailyCost && <p className="text-[11px] font-bold text-slate-400 mt-2">{dailyCost}</p>}
-          </div>
-
-          <Button 
-            variant={isElite ? 'glow' : (isHighlighted ? 'secondary' : 'outline')} 
-            className="w-full lg:w-auto lg:px-12" 
-            href={whatsappUrl}
-            onClick={(e) => {
-              e.preventDefault();
-              gtag_report_conversion(whatsappUrl);
-            }}
-          >
-            {ctaText}
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={`p-6 md:p-8 rounded-[32px] md:rounded-[56px] flex flex-col h-full transition-all duration-700 border text-center items-center relative ${cardStyles[variant]}`}>
@@ -844,7 +386,7 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
       <div className="mb-6">
         <div className={`inline-block px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4 border shadow-lg ${isElite ? 'bg-[#C5A059] text-white border-[#C5A059]/60' : 'bg-[#C5A059]/10 text-[#C5A059] border-[#C5A059]/30'}`}>
           {offerText ? offerText : (
-            <>OFERTA: <span className={`text-xl ${isElite ? 'text-white' : 'text-[#C5A059]'} gold-text-glow ml-2`}>{percent}</span> REVERTIDO EM CRÉDITOS NO 1º ANO</>
+            <>Para quem tem mais de <span className={`text-xl ${isElite ? 'text-white' : 'text-[#C5A059]'} gold-text-glow ml-2`}>{percent}</span> Atendimentos/Mês</>
           )}
         </div>
         <h3 className={`text-3xl md:text-4xl font-black mb-2 tracking-tighter leading-none`}>{title}</h3>
@@ -888,6 +430,7 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
       >
         {ctaText}
       </Button>
+      <p className="text-[10px] text-slate-400 mt-3 flex items-center justify-center gap-1"><Shield size={10} /> 7 dias de garantia incondicional</p>
     </div>
   );
 };
@@ -1037,6 +580,622 @@ const TestimonialsSection = () => {
   );
 };
 
+const CrmDashboardPreview = () => {
+  const containerRef = useRef(null);
+  // --- STATE MANAGEMENT ---
+  const [activeTab, setActiveTab] = useState('chat');
+  const [activeContactId, setActiveContactId] = useState(1);
+  const [inputText, setInputText] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('todos');
+  const [rightOpen, setRightOpen] = useState(true);
+  const [leftOpen, setLeftOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [automations, setAutomations] = useState({
+    followUp: true,
+    inactiveRecovery: false,
+    welcomeMessage: true,
+  });
+  const [contactsPage, setContactsPage] = useState(1);
+  const contactsPerPage = 4;
+
+  // --- MOCK DATA ---
+  const [contacts, setContacts] = useState([
+    { id: 1, name: 'João Silva', phone: '+55 11 99999-9999', avatar: 'JS', status: 'Novo', color: '#3b82f6', unread: 2, tags: [{name: 'Hot Lead', color: '#ef4444'}], lastMsg: 'Gostaria de saber mais sobre o plano.', time: '10:30', email: 'joao.silva@example.com', company: 'Tech Corp', source: 'Instagram Ads' },
+    { id: 2, name: 'Maria Oliveira', phone: '+55 21 98888-8888', avatar: 'MO', status: 'Concluído', color: '#22c55e', unread: 0, tags: [], lastMsg: 'Obrigado pelo atendimento!', time: 'Ontem', email: 'maria.o@example.com', company: 'Oliveira & Filhos', source: 'Site' },
+    { id: 3, name: 'Pedro Santos', phone: '+55 31 97777-7777', avatar: 'PS', status: 'Aguardando', color: '#eab308', unread: 0, tags: [{name: 'Dúvida', color: '#a855f7'}], lastMsg: 'Qual o valor da integração?', time: 'Ontem', email: 'pedro.santos@example.com', company: 'Santos Advocacia', source: 'Indicação' },
+    { id: 4, name: 'Ana Costa', phone: '+55 41 96666-6666', avatar: 'AC', status: 'Em Atendimento', color: '#3b82f6', unread: 1, tags: [{name: 'Urgente', color: '#ef4444'}], lastMsg: 'Pode me ligar?', time: '09:15', email: 'ana.costa@example.com', company: 'Costa Design', source: 'Google Ads' },
+    { id: 5, name: 'Lucas Pereira', phone: '+55 51 95555-5555', avatar: 'LP', status: 'Novo', color: '#3b82f6', unread: 0, tags: [], lastMsg: 'Olá, bom dia.', time: 'Segunda', email: 'lucas.p@example.com', company: 'Pereira Transportes', source: 'Facebook' },
+    { id: 6, name: 'Carla Dias', phone: '+55 61 94444-4444', avatar: 'CD', status: 'Novo', color: '#3b82f6', unread: 5, tags: [{name: 'VIP', color: '#C5A059'}], lastMsg: 'Tenho interesse no plano Corporativo', time: 'Segunda', email: 'carla.dias@example.com', company: 'Dias & Associados', source: 'LinkedIn' },
+    { id: 7, name: 'Marcos Lima', phone: '+55 71 93333-3333', avatar: 'ML', status: 'Concluído', color: '#22c55e', unread: 0, tags: [], lastMsg: 'Perfeito, contrato assinado!', time: 'Sexta', email: 'marcos.lima@example.com', company: 'Construtora Lima', source: 'Site' },
+  ]);
+
+  const [chats, setChats] = useState({
+    1: [{ id: 1, role: 'assistant', content: 'Olá João! 👋 Vi que você se interessou pelo nosso plano Elite. Posso tirar alguma dúvida sobre a implementação?', time: '10:28' }, { id: 2, role: 'user', content: 'Gostaria de saber mais sobre o plano.', time: '10:29' }],
+    2: [{ id: 1, role: 'assistant', content: 'Oi Maria, seu pedido foi confirmado!', time: 'Ontem' }, { id: 2, role: 'user', content: 'Obrigado pelo atendimento!', time: 'Ontem' }],
+    3: [{ id: 1, role: 'user', content: 'Qual o valor da integração?', time: 'Ontem' }],
+    4: [{ id: 1, role: 'assistant', content: 'Como posso ajudar?', time: '09:00' }, { id: 2, role: 'user', content: 'Pode me ligar?', time: '09:15' }],
+    5: [{ id: 1, role: 'user', content: 'Olá, bom dia.', time: 'Segunda' }],
+    6: [{ id: 1, role: 'user', content: 'Tenho interesse no plano Corporativo', time: 'Segunda' }],
+    7: [{ id: 1, role: 'assistant', content: 'Ficamos felizes em tê-lo como parceiro, Marcos!', time: 'Sexta' }, { id: 2, role: 'user', content: 'Perfeito, contrato assinado!', time: 'Sexta' }],
+  });
+
+  const chatContainerRef = useRef(null);
+
+  // --- EFFECTS ---
+  useEffect(() => {
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const { width } = entry.contentRect;
+        const mobile = width < 768;
+        setIsMobile(mobile);
+        if (mobile) {
+          setLeftOpen(true);
+          setRightOpen(false);
+        } else {
+          setLeftOpen(true);
+          setRightOpen(true);
+        }
+      }
+    });
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let timeouts = [];
+    if (activeContactId === 1 && chats[1]?.length === 2) {
+      timeouts.push(setTimeout(() => setIsTyping(true), 1500));
+      timeouts.push(setTimeout(() => {
+        setIsTyping(false);
+        setChats(prev => ({
+          ...prev,
+          1: [...prev[1], { id: 3, role: 'assistant', content: 'Entendido! O plano Elite é ideal para escalar sua operação. Ele inclui:\n\n✅ CRM Multicanal\n✅ Automação de Vendas com IA\n✅ API Oficial do WhatsApp\n\nQuer agendar uma demonstração rápida?', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]
+        }));
+      }, 5500));
+    }
+    return () => timeouts.forEach(clearTimeout);
+  }, [activeContactId, chats]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chats, activeContactId, activeTab, isTyping]);
+
+  // --- HANDLERS ---
+  const handleSendMessage = useCallback((e) => {
+    e?.preventDefault();
+    if (!inputText.trim()) return;
+
+    const newMsg = { id: Date.now(), role: 'assistant', content: inputText, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    setChats(prev => ({ ...prev, [activeContactId]: [...(prev[activeContactId] || []), newMsg] }));
+    setInputText('');
+
+    setTimeout(() => {
+      const replyMsg = { id: Date.now() + 1, role: 'user', content: 'Entendi, muito obrigado! Vou analisar.', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+      setChats(prev => ({ ...prev, [activeContactId]: [...(prev[activeContactId] || []), replyMsg] }));
+    }, 2000);
+  }, [inputText, activeContactId]);
+
+  const handleAutomationToggle = (key) => {
+    setAutomations(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  // --- MEMOIZED VALUES ---
+  const filteredContacts = useMemo(() => contacts.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || c.phone.includes(searchTerm);
+    const matchesFilter = filterStatus === 'todos' ? true : filterStatus === 'unread' ? c.unread > 0 : filterStatus === 'waiting' ? c.status === 'Aguardando' : true;
+    return matchesSearch && matchesFilter;
+  }), [contacts, searchTerm, filterStatus]);
+
+  const activeContact = useMemo(() => contacts.find(c => c.id === activeContactId) || contacts[0], [contacts, activeContactId]);
+  const activeMessages = useMemo(() => chats[activeContactId] || [], [chats, activeContactId]);
+
+  // --- RENDER HELPERS & SUB-COMPONENTS ---
+
+  const renderSidebarItem = (id, icon, label) => (
+    <button onClick={() => setActiveTab(id)} className={`p-3 rounded-xl transition-all duration-300 group relative flex justify-center ${activeTab === id ? 'bg-[#C5A059] text-white shadow-lg shadow-amber-900/50' : 'text-slate-400 hover:bg-white/10 hover:text-white'}`} title={label}>
+      {icon}
+      {activeTab === id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full -ml-4 hidden md:block"></div>}
+    </button>
+  );
+
+  const StatCard = ({ icon, label, value, color, change }) => (
+    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex items-center justify-between mb-2 md:mb-4">
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center`} style={{ backgroundColor: `${color}1A` }}>
+          {React.cloneElement(icon, { color, size: 20 })}
+        </div>
+        <div className={`flex items-center text-xs font-bold ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          <TrendingUp size={14} className="mr-1" /> {change}%
+        </div>
+      </div>
+      <p className="text-2xl md:text-3xl font-black text-gray-800">{value}</p>
+      <p className="text-xs md:text-sm text-gray-500 font-medium">{label}</p>
+    </div>
+  );
+
+  const DashboardView = () => {
+    const lineChartData = useMemo(() => Array.from({ length: 30 }, (_, i) => ({
+      name: format(subDays(new Date(), 29 - i), 'dd/MM'),
+      Atendimentos: 40 + Math.floor(Math.random() * 40) + i * 2,
+      Conversões: 5 + Math.floor(Math.random() * 15) + i * 0.5,
+    })), []);
+
+    const pieChartData = [
+      { name: 'Instagram', value: 400, color: '#8884d8' },
+      { name: 'Google Ads', value: 300, color: '#82ca9d' },
+      { name: 'Site', value: 300, color: '#ffc658' },
+      { name: 'Indicação', value: 200, color: '#ff8042' },
+    ];
+
+    return (
+      <div className="p-4 md:p-8 bg-gray-50 overflow-y-auto h-full">
+        <header className="mb-8">
+          <h1 className="text-3xl font-black text-gray-800">Dashboard</h1>
+          <p className="text-gray-500">Visão geral da sua operação de vendas.</p>
+        </header>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCard icon={<MessagesSquare />} label="Novas Conversas" value="1,284" color="#3b82f6" change={12.5} />
+          <StatCard icon={<CheckCircle2 />} label="Leads Qualificados" value="312" color="#22c55e" change={8.2} />
+          <StatCard icon={<Target />} label="Conversões (IA)" value="78" color="#C5A059" change={21.7} />
+          <StatCard icon={<Cpu />} label="Tokens Usados" value="1.2M" color="#8b5cf6" change={5.1} />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h3 className="font-bold text-lg mb-4 text-gray-800">Performance de Atendimentos</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={lineChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="Atendimentos" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="Conversões" stroke="#22c55e" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h3 className="font-bold text-lg mb-4 text-gray-800">Origem dos Leads</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <RechartsPieChart>
+                <Pie data={pieChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                  {pieChartData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </RechartsPieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const ContactsView = () => {
+    const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
+    const paginatedContacts = filteredContacts.slice((contactsPage - 1) * contactsPerPage, contactsPage * contactsPerPage);
+
+    return (
+      <div className="p-4 md:p-8 bg-gray-50 overflow-y-auto h-full flex flex-col">
+        <header className="mb-8">
+          <h1 className="text-3xl font-black text-gray-800">Contatos</h1>
+          <p className="text-gray-500">Gerencie todos os seus leads e clientes.</p>
+        </header>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 flex flex-col overflow-hidden">
+          <div className="p-4 border-b flex justify-between items-center flex-shrink-0">
+            <div className="relative w-full max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <input type="text" placeholder="Buscar contatos..." className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" onChange={e => setSearchTerm(e.target.value)} value={searchTerm} />
+            </div>
+            <Button variant="secondary" className="py-2 px-4 text-xs rounded-xl hidden sm:flex"><Plus size={16} /> Novo Contato</Button>
+            <Button variant="secondary" className="p-2 text-xs rounded-xl sm:hidden"><Plus size={16} /></Button>
+          </div>
+          <div className="flex-1 overflow-auto">
+            {/* Desktop Table */}
+            <table className="w-full text-sm text-left text-gray-500 hidden md:table">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3">Nome</th>
+                  <th scope="col" className="px-6 py-3">Status</th>
+                  <th scope="col" className="px-6 py-3">Tags</th>
+                  <th scope="col" className="px-6 py-3">Última Mensagem</th>
+                  <th scope="col" className="px-6 py-3"><span className="sr-only">Ações</span></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {paginatedContacts.map(contact => (
+                  <tr key={contact.id} className="bg-white hover:bg-gray-50">
+                    <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style={{backgroundColor: contact.color}}>{contact.avatar}</div>
+                      <div>
+                        {contact.name}
+                        <p className="font-normal text-gray-500">{contact.phone}</p>
+                      </div>
+                    </th>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 text-[10px] rounded-full font-bold" style={{ backgroundColor: `${contact.color}20`, color: contact.color }}>{contact.status}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-1.5">
+                        {contact.tags.map(tag => <span key={tag.name} className="px-2 py-1 text-[10px] rounded-md font-bold text-white" style={{backgroundColor: tag.color}}>{tag.name}</span>)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600 italic truncate max-w-xs">"{contact.lastMsg}"</td>
+                    <td className="px-6 py-4 text-right">
+                      <button className="p-2 hover:bg-gray-100 rounded-full"><MoreVertical size={16} /></button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Mobile Card List */}
+            <div className="md:hidden divide-y divide-gray-100">
+              {paginatedContacts.map(contact => (
+                <div key={contact.id} className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base flex-shrink-0" style={{backgroundColor: contact.color}}>{contact.avatar}</div>
+                      <div>
+                        <p className="font-bold text-gray-900">{contact.name}</p>
+                        <p className="text-xs text-gray-500">{contact.phone}</p>
+                      </div>
+                    </div>
+                    <button className="p-2 -mr-2 text-gray-400 hover:bg-gray-100 rounded-full"><MoreVertical size={16} /></button>
+                  </div>
+                  <div className="mt-3 text-xs text-gray-600 italic truncate">"{contact.lastMsg}"</div>
+                  <div className="mt-3 flex justify-between items-center">
+                    <div className="flex gap-1.5 flex-wrap">
+                      {contact.tags.map(tag => <span key={tag.name} className="px-2 py-1 text-[10px] rounded-md font-bold text-white" style={{backgroundColor: tag.color}}>{tag.name}</span>)}
+                    </div>
+                    <span className="px-2 py-1 text-[10px] rounded-full font-bold flex-shrink-0" style={{ backgroundColor: `${contact.color}20`, color: contact.color }}>{contact.status}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="p-4 border-t flex justify-between items-center flex-shrink-0">
+            <span className="text-xs text-gray-500">Página {contactsPage} de {totalPages}</span>
+            <div className="flex gap-2">
+              <button onClick={() => setContactsPage(p => Math.max(1, p - 1))} disabled={contactsPage === 1} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+              <button onClick={() => setContactsPage(p => Math.min(totalPages, p + 1))} disabled={contactsPage === totalPages} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">Próximo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const AutomationsView = () => {
+    const AutomationCard = ({ icon, title, description, status, onToggle }) => (
+      <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4 md:gap-6">
+        <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+          {icon}
+        </div>
+        <div className="flex-1">
+          <h3 className="font-bold text-gray-800">{title}</h3>
+          <p className="text-sm text-gray-500 mt-1">{description}</p>
+        </div>
+        <button onClick={onToggle} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${status ? 'bg-blue-600' : 'bg-gray-200'}`}>
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${status ? 'translate-x-6' : 'translate-x-1'}`} />
+        </button>
+      </div>
+    );
+
+    return (
+      <div className="p-4 md:p-8 bg-gray-50 overflow-y-auto h-full">
+        <header className="mb-8">
+          <h1 className="text-3xl font-black text-gray-800">Automações</h1>
+          <p className="text-gray-500">Configure os robôs que trabalham por você 24/7.</p>
+        </header>
+        <div className="space-y-6 max-w-3xl">
+          <AutomationCard 
+            icon={<RefreshCcw size={24} />}
+            title="Follow-up Inteligente"
+            description="Envia mensagens de acompanhamento automáticas para leads que não respondem."
+            status={automations.followUp}
+            onToggle={() => handleAutomationToggle('followUp')}
+          />
+          <AutomationCard 
+            icon={<Zap size={24} />}
+            title="Recuperação de Inativos"
+            description="Reativa clientes antigos com ofertas e novidades personalizadas."
+            status={automations.inactiveRecovery}
+            onToggle={() => handleAutomationToggle('inactiveRecovery')}
+          />
+          <AutomationCard 
+            icon={<MessageSquareText size={24} />}
+            title="Mensagem de Boas-vindas"
+            description="Saúda novos contatos instantaneamente e inicia a qualificação."
+            status={automations.welcomeMessage}
+            onToggle={() => handleAutomationToggle('welcomeMessage')}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const renderActiveView = () => {
+    switch (activeTab) {
+      case 'dashboard': return <DashboardView />;
+      case 'contacts': return <ContactsView />;
+      case 'automations': return <AutomationsView />;
+      case 'chat':
+      default:
+        return (
+          <div className="flex-1 flex flex-col min-w-0 bg-[#efeae2] relative h-full">
+            {/* Header */}
+            <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 flex-shrink-0 z-10 shadow-sm">
+              <div className="flex items-center gap-3">
+                <button onClick={() => setLeftOpen(!leftOpen)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 md:hidden">
+                  <ChevronLeft size={20} />
+                </button>
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">
+                  {activeContact.avatar}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-800 text-sm md:text-base flex items-center gap-2">
+                    {activeContact.name}
+                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  </h3>
+                  <p className="text-xs text-gray-500 truncate">Online agora</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 md:gap-2 text-gray-400">
+                <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Search size={20} /></button>
+                <button onClick={() => setRightOpen(!rightOpen)} className={`p-2 hover:bg-gray-100 rounded-full transition-colors ${rightOpen ? 'text-blue-600 bg-blue-50' : ''}`}><MoreVertical size={20} /></button>
+              </div>
+            </header>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 scroll-smooth" ref={chatContainerRef} style={{ backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")' }}>
+               {activeMessages.map((msg, idx) => (
+                 <div key={idx} className={`flex ${msg.role === 'assistant' ? 'justify-end' : 'justify-start'}`}>
+                   <div className={`max-w-[85%] md:max-w-[70%] p-3 md:p-4 rounded-2xl shadow-sm text-sm relative group ${msg.role === 'assistant' ? 'bg-[#d9fdd3] text-gray-800 rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none'}`}>
+                     <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                     <div className="flex justify-end items-center gap-1 mt-1 opacity-70">
+                       <span className="text-[10px]">{msg.time}</span>
+                       {msg.role === 'assistant' && <CheckCircle2 size={12} className="text-blue-500" />}
+                     </div>
+                   </div>
+                 </div>
+               ))}
+               {isTyping && (
+                 <div className="flex justify-end">
+                   <div className="bg-[#d9fdd3] p-4 rounded-2xl rounded-tr-none shadow-sm text-sm text-gray-800 relative flex items-center gap-3 animate-pulse">
+                     <span className="text-xs font-bold text-[#1A237E]">A IA está respondendo</span>
+                     <div className="flex gap-1">
+                       <div className="w-1.5 h-1.5 bg-[#1A237E] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                       <div className="w-1.5 h-1.5 bg-[#1A237E] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                       <div className="w-1.5 h-1.5 bg-[#1A237E] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                     </div>
+                   </div>
+                 </div>
+               )}
+            </div>
+
+            {/* Footer */}
+            <footer className="p-3 md:p-4 bg-[#f0f2f5] border-t border-gray-200 flex items-end gap-2 md:gap-3">
+              <div className="flex gap-1 mb-2">
+                 <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full transition-colors"><Plus size={20} /></button>
+              </div>
+              <div className="flex-1 bg-white rounded-2xl border border-gray-200 flex items-center focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-sm min-h-[48px]">
+                <textarea 
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) handleSendMessage(e); }}
+                  placeholder="Digite sua mensagem..." 
+                  className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-400 px-4 py-3 resize-none max-h-32"
+                  rows={1}
+                />
+                <div className="flex items-center pr-2 gap-1">
+                   <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"><Paperclip size={18} /></button>
+                   <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"><ImageIcon size={18} /></button>
+                </div>
+              </div>
+              <div className="mb-1">
+                {inputText.trim() ? (
+                  <button onClick={handleSendMessage} className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 transform hover:scale-105 active:scale-95">
+                    <Send size={20} className="ml-0.5" />
+                  </button>
+                ) : (
+                  <button className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 transform hover:scale-105 active:scale-95">
+                    <Mic size={20} />
+                  </button>
+                )}
+              </div>
+            </footer>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="w-full h-full flex flex-col md:flex-row bg-white overflow-hidden">
+      
+      {/* 1. App Sidebar (Leftmost) */}
+      <aside className="w-full md:w-20 bg-[#0f172a] text-white flex flex-row md:flex-col items-center py-4 md:py-6 gap-2 md:gap-6 flex-shrink-0 z-30 justify-between md:justify-start px-4 md:px-0">
+        <div className="bg-blue-600/20 w-10 h-10 flex items-center justify-center rounded-xl text-[#C5A059] mb-0 md:mb-4">
+          <span className="font-black text-lg md:text-xl">A</span>
+        </div>
+        
+        <nav className="flex flex-row md:flex-col gap-2 md:gap-4">
+          {renderSidebarItem('dashboard', <LayoutDashboard size={22} />, 'Dashboard')}
+          {renderSidebarItem('chat', <MessageSquareText size={22} />, 'Atendimentos')}
+          {renderSidebarItem('contacts', <User size={22} />, 'Contatos')}
+          {renderSidebarItem('automations', <Bot size={22} />, 'Automações')}
+        </nav>
+
+        <div className="mt-auto hidden md:block p-3 text-slate-400 hover:text-white cursor-pointer transition-colors">
+          <LogOut size={22} />
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex overflow-hidden relative">
+        {activeTab === 'chat' ? (
+          <div className="flex flex-1 overflow-hidden">
+            {/* 2. Contact List Sidebar */}
+            <aside className={`${!isMobile || leftOpen ? 'flex' : 'hidden'} w-full md:w-80 bg-white border-r border-gray-200 flex-col transition-all duration-300 ease-in-out z-20 h-full`}>
+              <div className="p-4 border-b border-gray-100 flex-shrink-0">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-bold text-xl text-gray-800">Conversas</h2>
+                  <div className="flex gap-2">
+                    <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500"><Edit size={18} /></button>
+                    {isMobile && <button onClick={() => setLeftOpen(false)} className="p-2 hover:bg-gray-100 rounded-full text-gray-500" aria-label="Fechar lista de contatos"><X size={18} /></button>}
+                  </div>
+                </div>
+                
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                  <input type="text" placeholder="Buscar conversa..." className="w-full pl-9 pr-4 py-2.5 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                </div>
+
+                <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                  {['todos', 'unread', 'waiting'].map(f => (
+                    <button key={f} onClick={() => setFilterStatus(f)} className={`px-3 py-1.5 text-xs font-bold rounded-full whitespace-nowrap transition-all ${filterStatus === f ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                      {f === 'todos' ? 'Todos' : f === 'unread' ? 'Não lidos' : 'Aguardando'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto">
+                {filteredContacts.map(contact => (
+                  <div key={contact.id} onClick={() => { setActiveContactId(contact.id); if (isMobile) setLeftOpen(false); }} className={`p-4 border-b border-gray-50 cursor-pointer transition-all hover:bg-gray-50 ${activeContactId === contact.id ? 'bg-blue-50/50 border-l-4 border-l-blue-600' : 'border-l-4 border-l-transparent'}`}>
+                    <div className="flex gap-3">
+                      <div className="relative">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm border border-gray-200">
+                          {contact.avatar}
+                        </div>
+                        {contact.unread > 0 && (
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-[10px] flex items-center justify-center rounded-full font-bold border-2 border-white">
+                            {contact.unread}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start mb-1">
+                          <h4 className={`text-sm truncate ${activeContactId === contact.id ? 'font-bold text-gray-900' : 'font-semibold text-gray-700'}`}>{contact.name}</h4>
+                          <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{contact.time}</span>
+                        </div>
+                        <p className={`text-xs truncate mb-2 ${contact.unread > 0 ? 'font-semibold text-gray-800' : 'text-gray-500'}`}>{contact.lastMsg}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 text-[10px] rounded-full font-bold bg-opacity-10" style={{ backgroundColor: `${contact.color}20`, color: contact.color }}>
+                            {contact.status}
+                          </span>
+                          {contact.tags.map((tag, i) => (
+                            <span key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} title={tag.name}></span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </aside>
+
+            <main className={`flex-1 flex-col min-w-0 ${isMobile && leftOpen ? 'hidden' : 'flex'}`}>
+              <div className="flex-1 flex overflow-hidden">
+                {/* 3. Main View Area */}
+                {renderActiveView()}
+    
+                {/* 4. Profile Sidebar (Right) */}
+                <aside className={`${rightOpen ? 'w-full md:w-80 translate-x-0' : 'w-0 translate-x-full md:opacity-0'} bg-white border-l border-gray-200 flex-col overflow-y-auto transition-all duration-300 ease-in-out absolute md:relative right-0 h-full z-20 shadow-xl md:shadow-none`}>
+                  <div className="p-6 flex flex-col items-center border-b border-gray-100 relative flex-shrink-0">
+                    <button onClick={() => setRightOpen(false)} className="absolute left-4 top-4 p-2 text-gray-400 hover:bg-gray-100 rounded-full md:hidden" aria-label="Fechar perfil">
+                      <X size={20} />
+                    </button>
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-3xl font-bold text-gray-500 mb-4 shadow-inner border-4 border-white">
+                      {activeContact.avatar}
+                    </div>
+                    <h3 className="font-bold text-xl text-gray-800 text-center">{activeContact.name}</h3>
+                    <p className="text-sm text-gray-500 mb-4 font-medium">{activeContact.phone}</p>
+                    
+                    <div className="flex gap-3 w-full">
+                      <button className="flex-1 py-2 bg-gray-100 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                        <Phone size={14} /> Ligar
+                      </button>
+                      <button className="flex-1 py-2 bg-gray-100 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                        <Archive size={14} /> Arquivar
+                      </button>
+                    </div>
+                  </div>
+    
+                  <div className="p-6 space-y-8 overflow-y-auto">
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Status</h4>
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: activeContact.color }}></span>
+                          <span className="text-sm font-bold text-gray-700">{activeContact.status}</span>
+                        </div>
+                        <Edit size={14} className="text-gray-400 cursor-pointer hover:text-blue-600" />
+                      </div>
+                    </div>
+    
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2"><Tag size={14} /> Tags</h4>
+                        <button className="text-blue-600 hover:bg-blue-50 p-1 rounded"><Plus size={14} /></button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {activeContact.tags.length > 0 ? activeContact.tags.map((tag, i) => (
+                          <span key={i} className="px-2.5 py-1 text-xs font-bold text-white rounded-md shadow-sm flex items-center gap-1" style={{ backgroundColor: tag.color }}>
+                            {tag.name}
+                            <X size={10} className="cursor-pointer hover:text-white/80" />
+                          </span>
+                        )) : <span className="text-xs text-gray-400 italic">Sem tags</span>}
+                      </div>
+                    </div>
+    
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2"><FileText size={14} /> Notas</h4>
+                        <button className="text-blue-600 hover:bg-blue-50 p-1 rounded"><Edit size={14} /></button>
+                      </div>
+                      <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100 text-xs text-gray-700 leading-relaxed shadow-sm relative group">
+                        <p>Cliente interessado no plano corporativo. Agendar reunião para próxima semana.</p>
+                        <span className="text-[10px] text-gray-400 block mt-2 text-right">Hoje, 10:00</span>
+                      </div>
+                    </div>
+    
+                    <div>
+                       <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Informações</h4>
+                       <div className="space-y-3">
+                         <div className="flex justify-between text-xs border-b border-gray-100 pb-2">
+                           <span className="text-gray-500">Email</span>
+                           <span className="font-medium text-gray-800 truncate">{activeContact.email}</span>
+                         </div>
+                         <div className="flex justify-between text-xs border-b border-gray-100 pb-2">
+                           <span className="text-gray-500">Empresa</span>
+                           <span className="font-medium text-gray-800">{activeContact.company}</span>
+                         </div>
+                         <div className="flex justify-between text-xs">
+                           <span className="text-gray-500">Origem</span>
+                           <span className="font-medium text-gray-800">{activeContact.source}</span>
+                         </div>
+                       </div>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </main>
+          </div>
+        ) : (
+          renderActiveView()
+        )}
+      </div>
+    </div>
+  );
+};
+
 // --- Main Application ---
 
 export default function App() {
@@ -1083,7 +1242,7 @@ export default function App() {
         const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
         if (whatsappNumber) {
           const message = `Olá! Com quem eu falo?`;
-          const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+          const url = `https://wa.me/55${phone}?text=${encodeURIComponent(message)}`;
           gtag_report_conversion(url);
         }
         setFormState({ description: '', phone: '' });
@@ -1094,7 +1253,7 @@ export default function App() {
       const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
       if (whatsappNumber) {
         const message = `Olá! Com quem eu falo?`;
-        const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/55${formState.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
         gtag_report_conversion(url);
       }
     } finally {
@@ -1124,7 +1283,7 @@ export default function App() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#C5A059]/10 rounded-full blur-[120px] -z-10 translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#1A237E]/5 rounded-full blur-[100px] -z-10 -translate-x-1/3 translate-y-1/4 pointer-events-none"></div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10 max-w-[85vw] mx-auto">
           {/* Left Column */}
           <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
             <FadeIn direction="down">
@@ -1132,7 +1291,7 @@ export default function App() {
                 <Sparkles size={12} className="text-[#C5A059]" />
                 <span>Nova Tecnologia 2026</span>
               </div>
-              <h1 className="text-4xl md:text-6xl lg:text-[72px] font-black text-[#1A237E] tracking-tighter mb-6 leading-[1.1] lg:leading-[1]">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#1A237E] tracking-tighter mb-6 leading-[1.1] lg:leading-[1]">
                 Transforme seu WhatsApp em uma <span className="text-[#C5A059] inline-block gold-text-glow">Máquina de Vendas</span>
               </h1>
             </FadeIn>
@@ -1143,68 +1302,28 @@ export default function App() {
               </p>
             </FadeIn>
             
-            <FadeIn delay={400} className="w-full">
-              <CountdownTimer align="start" />
-            </FadeIn>
-
             <FadeIn delay={600} className="w-full">
               <div className="flex flex-col sm:flex-row items-center gap-4 mb-8 w-full justify-center lg:justify-start">
-                <Button variant="glow" href="#planos" className="w-full sm:w-auto animate-pulse hover:animate-none">Ativar meu Especialista</Button>
-                <Button variant="outline" href="#teste" className="w-full sm:w-auto">Simular IA agora</Button>
+                <Button variant="glow" href="#teste" className="w-full sm:w-auto animate-pulse hover:animate-none">Ver demonstração</Button>
+                <Button variant="outline" href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000"}?text=Olá!%20Gostaria%20de%20falar%20com%20um%20consultor.`} target="_blank" className="w-full sm:w-auto border-[#1A237E]/20 text-[#1A237E] hover:bg-[#1A237E]/5">Falar com Consultor</Button>
               </div>
               
-              {/* Social Proof */}
-              <div className="flex items-center gap-4 justify-center lg:justify-start">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3].map((i) => (
-                    <img key={i} src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${40 + i}.jpg`} alt="User" className="w-8 h-8 rounded-full border-2 border-white shadow-sm" />
-                  ))}
-                </div>
-                <div className="text-left">
-                  <div className="flex text-[#C5A059] gap-0.5">
-                    {[1,2,3,4,5].map(s => <Star key={s} size={10} fill="currentColor" />)}
-                  </div>
-                  <p className="text-[10px] font-bold text-slate-500"><span className="text-[#1A237E] font-black">+50 empresas</span> confiam</p>
-                </div>
-              </div>
-              
-              <p className="text-[10px] font-bold text-[#1A237E]/40 uppercase tracking-widest mt-6 text-center lg:text-left">
+              <p className="text-[10px] font-bold text-[#1A237E]/40 uppercase tracking-widest mt-6 text-center">
                 ✓ Teste grátis hoje • ✓ Cancele quando quiser
               </p>
             </FadeIn>
           </div>
 
           {/* Right Column */}
-          <div className="relative hidden lg:block h-full min-h-[600px]">
-             <FadeIn direction="left" delay={300} className="h-full">
-                <div className="relative w-full h-full rounded-[40px] overflow-hidden shadow-2xl border-4 border-white transform rotate-1 hover:rotate-0 transition-all duration-700 group [mask-image:radial-gradient(white,black)]">
-                  <img 
-                    src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80" 
-                    alt="Business Growth" 
-                    className="object-cover w-full h-full scale-105 group-hover:scale-110 transition-transform duration-1000"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A237E]/80 via-transparent to-transparent"></div>
-                  
-                  {/* Floating Card 1 */}
-                  <div className="absolute bottom-10 left-10 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-white/50 flex items-center gap-4 animate-bounce" style={{ animationDuration: '3s' }}>
-                    <div className="bg-green-100 p-3 rounded-full text-green-600">
-                      <CheckCircle2 size={24} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Venda Realizada</p>
-                      <p className="text-lg font-black text-[#1A237E]">+R$ 597,00</p>
-                    </div>
-                  </div>
-
-                  {/* Floating Card 2 */}
-                  <div className="absolute top-10 right-10 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-white/50 flex items-center gap-3 animate-pulse" style={{ animationDuration: '4s' }}>
-                    <div className="bg-[#1A237E]/10 p-2 rounded-full text-[#1A237E]">
-                      <MessageSquareText size={20} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Lead Qualificado</p>
-                      <p className="text-sm font-black text-[#1A237E]">Agendamento Confirmado</p>
-                    </div>
+          <div className="relative hidden lg:flex items-center justify-center">
+             <FadeIn direction="left" delay={300}>
+                <div className="relative mx-auto border-gray-900 bg-gray-800 border-[8px] rounded-[2.5rem] h-[712px] w-[350px] shadow-xl">
+                  <div className="w-[140px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute z-10"></div>
+                  <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[11px] top-[62px] rounded-l-lg"></div>
+                  <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[11px] top-[124px] rounded-l-lg"></div>
+                  <div className="h-[64px] w-[3px] bg-gray-800 absolute -right-[11px] top-[142px] rounded-r-lg"></div>
+                  <div className="rounded-[2rem] overflow-hidden w-full h-full bg-white">
+                    <CrmDashboardPreview />
                   </div>
                 </div>
              </FadeIn>
@@ -1212,7 +1331,7 @@ export default function App() {
         </div>
       </Section>
 
-      <TrustSection />
+      
 
       {/* Atendimento 360 Section */}
       <Section id="como-funciona" className="relative">
@@ -1229,10 +1348,28 @@ export default function App() {
             </div>
           </FadeIn>
 
-          <ObjectionHandling />
 
           <FadeIn delay={200}>
-            <CrmDashboardPreview />
+            <div className="w-full w-full mx-auto mb-16 md:mb-24 relative group px-2 md:px-0 h-[85vh] max-h-[800px] min-h-[700px] rounded-[24px] shadow-2xl border border-slate-200 overflow-hidden">
+              <CrmDashboardPreview />
+            </div>
+          </FadeIn>
+
+
+      <TrustSection />
+
+        </div>
+      </Section>
+
+      <Section id="solucoes" className="relative">
+        <div className="max-w-[1100px] mx-auto">
+          <FadeIn>
+            <div className="text-center mb-12 md:mb-20">
+              <h2 className="text-3xl md:text-6xl font-black text-[#1A237E] mb-6 tracking-tighter">O que você <span className="text-[#C5A059]">Precisa?</span></h2>
+              <p className="text-lg text-slate-500 font-light max-w-2xl mx-auto">
+                Escolha a solução ideal para o momento do seu negócio.
+              </p>
+            </div>
           </FadeIn>
 
           <div className="grid md:grid-cols-2 gap-16 relative items-stretch">
@@ -1252,25 +1389,12 @@ export default function App() {
               <h3 className="text-3xl md:text-5xl font-black text-[#1A237E] mb-5 tracking-tighter leading-none">Atende.AI</h3>
               <p className="text-[#C5A059] font-black uppercase text-[11px] tracking-[0.5em] mb-12">Cérebro do seu Receptivo</p>
               
-              {/* WhatsApp Box */}
-              <div className="w-full bg-[#E5DDD5] rounded-[24px] md:rounded-[40px] p-4 md:p-8 mb-8 md:mb-12 border border-slate-200 space-y-5 shadow-inner relative overflow-hidden">
-                <div className="wa-background opacity-10"></div>
-                <div className="bg-white p-4 rounded-2xl rounded-tl-none text-[13px] text-left shadow-md border border-slate-100 max-w-[85%] relative z-10 leading-relaxed">
-                  "Oi! Vi o anúncio no Instagram agora e fiquei curioso. Como funciona esse cérebro digital exatamente?"
-                </div>
-                <div className="bg-[#DCF8C6] text-slate-800 p-4 rounded-2xl rounded-tr-none text-[13px] text-left shadow-md ml-auto max-w-[85%] relative z-10 leading-relaxed">
-                  "Oi! Que bom ter você aqui! 🚀 Nosso cérebro digital entende seu negócio e responde de forma imediata, 24h por dia, com o seu tom de voz. Qual o seu nicho?"
-                </div>
-              </div>
-
               <ul className="space-y-6 text-left w-full max-w-xs mx-auto mb-14">
                 {[
-                  "IA 100% Customizável",
-                  "Envia Áudios, Imagens e Vídeos",
-                  "Integração com Google Agenda",
-                  "Lê Documentos e Arquivos",
                   "Atendimento Humanizado 24/7",
-                  "Foco total em fechamento de vendas"
+                  "Envia e Lê Imagens, Vídeos e Documentos",
+                  "API Oficial do WhatsApp",
+                  "Qualificação Automática de Leads",
                 ].map((text, i) => (
                   <li key={i} className="flex items-start gap-5 text-slate-600 font-bold italic text-[15px] leading-tight">
                     <CheckCircle2 className="text-[#C5A059] w-6 h-6 flex-shrink-0" />
@@ -1291,23 +1415,12 @@ export default function App() {
               <h3 className="text-3xl md:text-5xl font-black text-[#1A237E] mb-5 tracking-tighter leading-none">Prospect.AI</h3>
               <p className="text-[#C5A059] font-black uppercase text-[11px] tracking-[0.5em] mb-12">Motor de Prospecção Ativa</p>
 
-              {/* WhatsApp Box */}
-              <div className="w-full bg-[#E5DDD5] rounded-[24px] md:rounded-[40px] p-4 md:p-8 mb-8 md:mb-12 border border-slate-200 space-y-5 shadow-inner relative overflow-hidden">
-                <div className="wa-background opacity-10"></div>
-                <div className="bg-[#DCF8C6] text-slate-800 p-4 rounded-2xl rounded-tr-none text-[13px] text-left shadow-md ml-auto max-w-[90%] relative z-10 leading-relaxed">
-                  "Olá João! Vimos que você conheceu nossa solução mas ainda não ativou seu motor de prospecção. Temos uma condição exclusiva de 100% de retorno em créditos para você fechar hoje. Vamos escalar seu faturamento?"
-                </div>
-                <div className="bg-white p-4 rounded-2xl rounded-tl-none text-[13px] text-left shadow-md border border-slate-100 max-w-[80%] relative z-10 leading-relaxed">
-                  "Opa! Estava mesmo pensando nisso. Essa oferta dos créditos revertidos ainda está disponível para o meu CNPJ?"
-                </div>
-              </div>
-
               <ul className="space-y-6 text-left w-full max-w-xs mx-auto mb-14">
                 {[
-                  "Reativação de clientes inativos",
                   "Prospecção fria automatizada",
                   "Filtro de leads qualificados",
-                  "Recuperação de vendas perdidas"
+                  "Disparo em massa inteligente",
+                  "Follow-up Automático"      
                 ].map((text, i) => (
                   <li key={i} className="flex items-start gap-5 text-slate-600 font-bold italic text-[15px] leading-tight">
                     <CheckCircle2 className="text-[#C5A059] w-6 h-6 flex-shrink-0" />
@@ -1331,99 +1444,44 @@ export default function App() {
           </div>
         </FadeIn>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[1400px] mx-auto px-4 md:px-6 mb-8 md:mb-16 items-stretch">
-          <FadeIn delay={0} className="h-full">
-          <PlanCard 
-            title="CRM Start"
-            subtitle="Gestão de Leads"
-            price="97"
-            offerText="CRM COMPLETO, CRÉDITOS PARA TESTE DE IA INCLUSOS"
-            ctaText="Contratar Agora"
-            features={[
-              "Plataforma CRM Completa",
-              "Gestão de Funil de Vendas",
-              "Integração WhatsApp Oficial",
-              "Créditos para Teste de IA",
-              "Suporte IA"
-            ]}
-          />
-          </FadeIn>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto px-4 md:px-6 mb-8 md:mb-16 items-stretch">
           <FadeIn delay={150} className="h-full">
           <PlanCard 
             title="Essencial"
-            subtitle="Atendimento Receptivo"
+            subtitle="Para Negócios em Crescimento"
             price="297"
-            percent="50%"
+            offerText="Média de 100 atendimentos/Mês"
             ctaText="Contratar Agora"
             paymentLink={import.meta.env.VITE_ASAAS_ESSENTIAL_URL}
+            variant="highlighted"
+            popular={true}
             features={[
-              "Atendimento Humanizado Ativo",
-              "50% Reversão em Créditos",
-              "Integração WhatsApp Oficial",
               "Plataforma CRM Completa",
-              "Configuração Guiada Inclusa"
+              "ProspectAI e AtendAI",
+              "Atendimento e Prospecção IA",
+              "Integração WhatsApp Oficial",
             ]}
           />
           </FadeIn>
           <FadeIn delay={300} className="h-full">
           <PlanCard 
-            title="Dominância"
-            subtitle="Ecosistema 360"
-            price="597"
-            variant="highlighted"
-            popular={true}
-            percent="100%"
-            dailyCost="Menos de R$ 20/dia"
-            ctaText="Contratar Agora"
-            paymentLink={import.meta.env.VITE_ASAAS_DOMINANCE_URL}
-            features={[
-              "Tudo do Plano Essencial",
-              "Acesso antecipado Prospect AI",
-              "Prospecção de Novos Leads",
-              "100% Reversão em Créditos",
-              "Suporte Prioritário"
-            ]}
-          />
-          </FadeIn>
-          <FadeIn delay={500} className="h-full lg:col-span-3">
-          <PlanCard 
-            title="Elite Studio"
-            subtitle="Diamond Insider"
+            title="Corporativo"
+            subtitle="Alta Performance e Escala"
             price="997"
             variant="elite"
-            percent="100%"
-            description="Tenha acesso direto ao nosso time de desenvolvimento para priorizar as funções que o seu negócio exige."
-            ctaText="Falar com um Estrategista"
+            percent="1.000"
+            description="Acesso direto ao time de engenharia para personalizações avançadas."
+            ctaText="Falar com Estrategista"
             features={[
-              "Voz Ativa em Futuros Desenvolvimentos",
+              "Tudo do Plano Essencial",
               "Personalizações sob Demanda",
               "Engenharia de Prompt Dedicada",
-              "Estratégias de Alta Escala",
-              "100% Reversão em Créditos",
-              "Acesso aos Bastidores"
+              "Múltiplos Números de WhatsApp",
+              "10x mais Tokens para sua IA"
             ]}
           />
           </FadeIn>
         </div>
-
-        {/* Legend Caption */}
-        <FadeIn delay={600}>
-          <div className="text-center mb-10 md:mb-20 max-w-2xl mx-auto">
-            <p className="text-sm md:text-base text-slate-500 font-bold italic leading-relaxed">
-              O modelo de reversão de créditos garante que sua escala nunca seja limitada por taxas fixas. <span className="text-[#C5A059]">Seu investimento vira combustível real.</span>
-            </p>
-          </div>
-        </FadeIn>
-
-        {/* Custo Justo Refinement Note */}
-        <FadeIn delay={700}>
-          <div className="max-w-4xl mx-auto bg-white border border-[#C5A059]/20 rounded-[32px] p-8 md:p-10 shadow-2xl text-center">
-            <p className="text-base md:text-lg text-[#1A237E] font-medium leading-relaxed italic">
-              <span className="text-[#C5A059] font-black uppercase tracking-widest block mb-2 text-sm">ESCALA SEM SUSTO</span>
-              Sua mensalidade licencia nossa infraestrutura de IA de elite, capaz de gerenciar contextos gigantes e catálogos com milhares de produtos sem travar sua operação. Como condição especial, revertemos até 100% deste valor em créditos de conversa e, se sua escala superar o saldo garantido, você continua operando via cobrança justa por volume excedente, com total transparência e previsibilidade.
-            </p>
-          </div>
-        </FadeIn>
       </Section>
 
       {/* Simulation Form */}
@@ -1447,13 +1505,14 @@ export default function App() {
                 onChange={handlePhoneChange}
                 maxLength={15}
               />
+              <p className="text-[10px] text-slate-400 flex items-center gap-1 pl-2"><Shield size={10} /> Seus dados estão seguros. Não enviamos spam.</p>
             </div>
             <div className="space-y-4">
               <label className="text-[11px] font-black text-[#1A237E] uppercase tracking-[0.3em] ml-2 opacity-60">Descreva sua empresa</label>
               <textarea 
                 required
                 rows={5}
-                placeholder="Descreva um pouco a sua empresa e como deve ser o atendimento."
+                placeholder="Ex: Sou a Clínica Estética Bela Vida. Gostaria que a IA tirasse dúvidas sobre procedimentos e informasse os horários de funcionamento."
                 className="w-full px-6 py-4 md:px-10 md:py-7 rounded-[28px] bg-white border border-slate-100 focus:border-[#C5A059] focus:ring-[12px] focus:ring-[#C5A059]/10 outline-none transition-all shadow-sm resize-none font-semibold text-base md:text-lg leading-relaxed"
                 value={formState.description}
                 onChange={(e) => setFormState({...formState, description: e.target.value})}
@@ -1475,8 +1534,6 @@ export default function App() {
       </Section>
 
       <FAQSection />
-
-      <TestimonialsSection />
 
       {/* Footer */}
       <footer className="bg-[#1A237E] py-10 md:py-32 px-6 relative overflow-hidden text-center">
