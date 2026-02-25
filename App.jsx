@@ -1450,7 +1450,7 @@ export default function App() {
             title="Essencial"
             subtitle="Para Negócios em Crescimento"
             price="297"
-            offerText="Média de 100 atendimentos/Mês"
+            offerText="Média de 300 atendimentos/Mês"
             ctaText="Contratar Agora"
             paymentLink={import.meta.env.VITE_ASAAS_ESSENTIAL_URL}
             variant="highlighted"
