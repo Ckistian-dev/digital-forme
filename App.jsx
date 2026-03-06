@@ -1242,7 +1242,7 @@ export default function App() {
         const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
         if (whatsappNumber) {
           const message = `Olá! Com quem eu falo?`;
-          const url = `https://wa.me/55${phone}?text=${encodeURIComponent(message)}`;
+          const url = `https://wa.me/55${whatsappNumber}?text=${encodeURIComponent(message)}`;
           gtag_report_conversion(url);
         }
         setFormState({ description: '', phone: '' });
@@ -1253,7 +1253,7 @@ export default function App() {
       const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER;
       if (whatsappNumber) {
         const message = `Olá! Com quem eu falo?`;
-        const url = `https://wa.me/55${formState.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/55${whatsappNumber}?text=${encodeURIComponent(message)}`;
         gtag_report_conversion(url);
       }
     } finally {

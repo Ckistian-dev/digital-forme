@@ -6,11 +6,33 @@ const api = axios.create({
 
 // Interceptor para adicionar o token de autenticação a cada requisição
 api.interceptors.request.use(
-    (config) => {
-        // Prioriza o token do .env para a Landing Page, ou usa o do localStorage se disponível
-        const token = import.meta.env.VITE_API_ACCESS_TOKEN || localStorage.getItem('accessToken');
-        if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
+    async (config) => {
+        // Evita loop se a requisição for para o endpoint de token
+        if (config.url && config.url.includes('/auth/token')) {
+            return config;
+        }
+
+        try {
+            const email = import.meta.env.VITE_API_EMAIL;
+            const password = import.meta.env.VITE_API_PASSWORD;
+
+            if (email && password) {
+                const formData = new FormData();
+                formData.append('username', email);
+                formData.append('password', password);
+
+                // Gera um novo token para cada requisição
+                const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/token`, formData, {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+
+                const token = response.data.access_token;
+                if (token) {
+                    config.headers['Authorization'] = `Bearer ${token}`;
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao gerar token no interceptor:", error);
         }
         return config;
     },
@@ -25,8 +47,6 @@ api.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             console.error("Erro 401: Token inválido ou expirado.");
-            // Opcional: Redirecionar apenas se não estiver usando o token estático do .env
-            // window.location.href = '/login';
         }
         return Promise.reject(error);
     }
