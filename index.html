@@ -145,6 +145,14 @@
       .gold-text-glow {
         text-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
       }
+      @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-50%); }
+      }
+      .animate-marquee {
+        animation: marquee 25s linear infinite;
+        will-change: transform;
+      }
     </style>
   <script type="importmap">
 {

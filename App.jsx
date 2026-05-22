@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import api from './axiosConfig';
-import { 
-  Zap, 
-  CheckCircle2, 
-  MessageSquare, 
-  BrainCircuit, 
+import logo from './public/logo.png';
+import logoOdontojet from './public/logoOdontojet.PNG';
+import logoFerragens from './public/logoFerragens.png';
+import {
+  Zap,
+  CheckCircle2,
+  MessageSquare,
+  BrainCircuit,
   TrendingUp,
   ChevronRight,
   Sparkles,
@@ -61,7 +64,7 @@ registerLocale('pt-BR', ptBR);
 // Google Ads Conversion Tracking
 function gtag_report_conversion(url) {
   var callback = function () {
-    if (typeof(url) != 'undefined') {
+    if (typeof (url) != 'undefined') {
       // Open in a new tab for WhatsApp links
       if (url.startsWith('https://wa.me/')) {
         window.open(url, '_blank');
@@ -72,13 +75,13 @@ function gtag_report_conversion(url) {
   };
   if (typeof window.gtag === 'function') {
     window.gtag('event', 'conversion', {
-        'send_to': 'AW-17907272489/MmjTCJ_6o-0bEKmW7dpC',
-        'value': 1.0,
-        'currency': 'BRL',
-        'event_callback': callback
+      'send_to': 'AW-17907272489/MmjTCJ_6o-0bEKmW7dpC',
+      'value': 1.0,
+      'currency': 'BRL',
+      'event_callback': callback
     });
   } else {
-    if (typeof(url) != 'undefined') {
+    if (typeof (url) != 'undefined') {
       window.open(url, '_blank');
     }
   }
@@ -87,7 +90,7 @@ function gtag_report_conversion(url) {
 
 // --- Components ---
 
-const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWidth = false }) => {
+const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWidth = false, scale = false }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
 
@@ -99,7 +102,7 @@ const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWid
           observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.15 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => {
@@ -118,9 +121,8 @@ const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWid
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out transform ${fullWidth ? 'w-full' : ''} ${
-        isVisible ? 'opacity-100 translate-y-0 translate-x-0' : `opacity-0 ${directions[direction]}`
-      } ${className}`}
+      className={`transition-all duration-1000 ease-out transform ${fullWidth ? 'w-full' : ''} ${isVisible ? 'opacity-100 translate-y-0 translate-x-0 scale-100' : `opacity-0 ${directions[direction]} ${scale ? 'scale-90' : 'scale-95'}`
+        } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -129,7 +131,7 @@ const FadeIn = ({ children, delay = 0, direction = 'up', className = '', fullWid
 };
 
 const StickyTopBar = () => (
-  <div className="fixed top-0 left-0 right-0 z-[100] bg-[#1A237E] py-2 px-4 border-b border-[#C5A059]/30 text-center min-h-[40px] max-w-full flex items-center justify-center">
+  <div className="fixed top-0 left-0 right-0 z-[100] bg-[#111827] py-2 px-4 border-b border-[#C5A059]/30 text-center min-h-[40px] max-w-full flex items-center justify-center">
     <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-[#C5A059] leading-tight">
       Oportunidade de Lançamento: Vagas LIMITADAS com Investimento Revertido em 100% de Créditos.
     </p>
@@ -141,7 +143,7 @@ const FloatingWhatsApp = () => {
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Digital%20ForMe.`;
 
   return (
-    <a 
+    <a
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
@@ -154,7 +156,7 @@ const FloatingWhatsApp = () => {
       <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-20"></div>
       <div className="bg-[#25D366] w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-[0_4px_14px_rgba(37,211,102,0.4)] border-2 border-white relative z-10">
         <svg viewBox="0 0 24 24" className="w-8 h-8 md:w-9 md:h-9 fill-white" xmlns="http://www.w3.org/2000/svg">
-           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
         </svg>
       </div>
     </a>
@@ -165,7 +167,7 @@ const NotificationToast = () => {
   const [visible, setVisible] = useState(false);
   const [isPermanentlyHidden, setIsPermanentlyHidden] = useState(false);
   const [currentMsg, setCurrentMsg] = useState(0);
-  
+
   const messages = [
     "Mais uma empresa acaba de recuperar um lead perdido.",
     "Nova automação ativada para setor de vendas agora mesmo.",
@@ -177,7 +179,7 @@ const NotificationToast = () => {
 
   useEffect(() => {
     if (isPermanentlyHidden) return;
-    
+
     const timer = setTimeout(() => {
       if (!isPermanentlyHidden) setVisible(true);
     }, 5000);
@@ -191,7 +193,7 @@ const NotificationToast = () => {
         setVisible(true);
       }, 1000);
     }, 15000);
-    
+
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
@@ -209,38 +211,38 @@ const NotificationToast = () => {
   return (
     <div className={`fixed bottom-4 left-4 right-auto max-w-[calc(100%_-_120px)] md:max-w-none md:left-8 md:bottom-8 z-[110] transition-all duration-1000 transform ${visible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
       <div className="bg-white px-5 py-4 md:px-7 md:py-5 rounded-[20px] md:rounded-[28px] shadow-[0_10px_40px_rgba(26,35,126,0.15)] border border-[#C5A059]/40 flex items-center gap-4 md:gap-5 relative pr-12 md:pr-14 group w-auto">
-        <button 
+        <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-[#1A237E]/30 hover:text-[#1A237E] transition-all p-1.5 rounded-full hover:bg-slate-100"
+          className="absolute top-4 right-4 text-[#111827]/30 hover:text-[#111827] transition-all p-1.5 rounded-full hover:bg-slate-100"
         >
           <X size={18} />
         </button>
         <div className="max-w-[280px]">
           <p className="text-[10px] font-black uppercase text-[#C5A059] tracking-[0.2em] mb-0.5 opacity-80">Notificação</p>
-          <p className="text-[12px] font-bold text-[#1A237E] leading-snug tracking-tight">{messages[currentMsg]}</p>
+          <p className="text-[12px] font-bold text-[#111827] leading-snug tracking-tight">{messages[currentMsg]}</p>
         </div>
       </div>
     </div>
   );
 };
 
-const Button = ({ 
-  children, 
-  variant = 'primary', 
-  className = '', 
+const Button = ({
+  children,
+  variant = 'primary',
+  className = '',
   onClick,
   href,
   target,
   ...props
 }) => {
-  const baseStyles = "btn-shine px-6 py-4 md:px-10 md:py-5 rounded-[20px] md:rounded-[24px] font-black transition-all duration-500 flex items-center justify-center gap-3 active:scale-95 text-xs md:text-sm uppercase tracking-widest mx-auto";
+  const baseStyles = "btn-shine px-6 py-4 md:px-10 md:py-5 rounded-[20px] md:rounded-[24px] font-black transition-all duration-500 flex items-center justify-center gap-3 active:scale-95 hover:scale-105 text-xs md:text-sm uppercase tracking-widest mx-auto";
   const variants = {
-    primary: "bg-[#C5A059] text-white hover:bg-[#b08e4d] shadow-xl shadow-[#C5A059]/20",
-    secondary: "bg-[#1A237E] text-white hover:bg-[#151c66] shadow-xl shadow-[#1A237E]/20",
-    outline: "border-[2px] border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059]/5 font-black",
-    glow: "bg-[#C5A059] text-white hover:bg-[#b08e4d] shadow-[0_0_50px_rgba(197,160,89,0.5)] transform hover:-translate-y-1.5"
+    primary: "bg-[#C5A059] text-white hover:bg-[#b08e4d] hover:-translate-y-1 shadow-xl hover:shadow-2xl shadow-[#C5A059]/20",
+    secondary: "bg-[#111827] text-white hover:bg-[#151c66] hover:-translate-y-1 shadow-xl hover:shadow-2xl shadow-[#111827]/20",
+    outline: "border-[2px] border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059]/5 hover:-translate-y-1 font-black",
+    glow: "bg-[#C5A059] text-white hover:bg-[#b08e4d] shadow-[0_0_50px_rgba(197,160,89,0.5)] transform hover:-translate-y-2 hover:shadow-[0_0_70px_rgba(197,160,89,0.8)]"
   };
-  
+
   if (href) {
     return (
       <a href={href} target={target} onClick={onClick} className={`${baseStyles} ${variants[variant]} ${className}`} {...props}>
@@ -257,7 +259,7 @@ const Button = ({
 };
 
 const Section = ({ children, className = "", id = "", dark = false }) => (
-  <section id={id} className={`py-6 md:py-[120px] px-4 md:px-6 ${dark ? 'bg-[#1A237E] text-white' : ''} ${className} scroll-mt-24 md:scroll-mt-32`}>
+  <section id={id} className={`py-6 md:py-[120px] px-4 md:px-6 ${dark ? 'bg-[#111827] text-white' : ''} ${className} scroll-mt-24 md:scroll-mt-32`}>
     <div className="max-w-7xl mx-auto overflow-visible">
       {children}
     </div>
@@ -265,8 +267,8 @@ const Section = ({ children, className = "", id = "", dark = false }) => (
 );
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -277,70 +279,61 @@ const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 30);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <>
-      <nav className={`fixed top-[32px] md:top-[48px] left-0 right-0 z-[90] transition-all duration-700 px-2 md:px-6 w-full my-5`}>
-        <div className={`max-w-7xl mx-auto h-14 md:h-20 rounded-[20px] md:rounded-[30px] bg-white/20 backdrop-blur-md px-4 md:px-10 flex items-center justify-between transition-all ${isScrolled ? 'shadow-xl translate-y-[-4px] md:translate-y-[-8px] border-[#C5A059]/30 border' : 'py-3 md:py-4'}`}>
-          <a href="#inicio" className="flex items-center gap-2 relative z-[100]">
-            <span className="font-black text-sm md:text-2xl tracking-tighter text-[#1A237E] leading-tight">
-              Digital ForMe <span className="text-[#C5A059] block md:inline text-[10px] md:text-2xl">| CJS Soluções</span>
-            </span>
+      <nav className={`w-full fixed top-0 left-0 right-0 z-[90] h-20 px-4 md:h-24 md:mt-[-10px] md:px-8 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <a href="#inicio" className="flex items-center relative z-[100]">
+            <img src={logo} alt="CJS Soluções" className="h-20 md:h-24 lg:h-28 object-contain" />
           </a>
-          
-          <div className="hidden lg:flex items-center gap-10">
-            <a href="#como-funciona" className="text-xs font-black text-[#1A237E]/70 hover:text-[#C5A059] transition-all uppercase tracking-[0.2em]">Como Funciona</a>
-            <a href="#planos" className="text-xs font-black text-[#1A237E]/70 hover:text-[#C5A059] transition-all uppercase tracking-[0.2em]">Valores</a>
-            <a href="#faq" className="text-xs font-black text-[#1A237E]/70 hover:text-[#C5A059] transition-all uppercase tracking-[0.2em]">FAQ</a>
-            <Button variant="glow" href="#teste" className="py-3 px-8 text-[11px] mx-0 rounded-[18px] shadow-[#C5A059]/30">Teste Grátis</Button>
-          </div>
 
-          <div className="lg:hidden flex items-center gap-3 relative z-[100]">
-             <Button variant="glow" href="#teste" className="py-[10px] px-4 text-[8px] mx-0 rounded-[12px] shadow-none">Teste Grátis</Button>
-             <button 
-               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-               className={`w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 ${isMobileMenuOpen ? 'bg-[#1A237E] text-white rotate-90' : 'bg-[#1A237E]/5 text-[#1A237E]'}`}
-             >
-               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-             </button>
+          <div className="flex items-center gap-3 md:gap-4 relative z-[100]">
+            <div className="hidden md:flex items-center gap-6 mr-4">
+              <a href="#como-funciona" className="text-[#111827] text-[13px] font-bold hover:text-[#C5A059] transition-colors uppercase tracking-wide">Como Funciona</a>
+              <a href="#planos" className="text-[#111827] text-[13px] font-bold hover:text-[#C5A059] transition-colors uppercase tracking-wide">Valores</a>
+              <a href="#faq" className="text-[#111827] text-[13px] font-bold hover:text-[#C5A059] transition-colors uppercase tracking-wide">FAQ</a>
+            </div>
+            <a href="#teste" className="flex items-center text-white bg-[#C5A059] hover:bg-[#b08e4d] px-4 py-2 md:px-5 md:py-2.5 rounded-full font-bold text-[11px] md:text-sm shadow-md transition-all">
+              Demonstração
+            </a>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`md:hidden w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 ${isMobileMenuOpen ? 'bg-[#111827] text-white rotate-90' : 'bg-[#111827]/5 text-[#111827]'}`}
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
         </div>
       </nav>
+      {/* Overlay background */}
+      <div className={`fixed inset-0 bg-[#111827]/20 backdrop-blur-sm z-[85] transition-opacity duration-500 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
 
-      <div className={`fixed inset-0 z-[88] bg-[#050A24]/95 backdrop-blur-xl transition-all duration-500 flex flex-col items-center justify-center ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-         </div>
+      <div className={`fixed top-0 left-0 right-0 z-[88] bg-white transition-all duration-500 flex flex-col pt-24 pb-12 px-6 shadow-2xl rounded-b-[2.5rem] origin-top ${isMobileMenuOpen ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-full opacity-0 pointer-events-none'}`}>
+        <nav className="flex flex-col items-center gap-8 w-full mb-10">
+          <a href="#como-funciona" onClick={() => setIsMobileMenuOpen(false)} className="text-[#111827] text-[16px] font-medium flex items-center gap-2 hover:text-[#C5A059]">
+            Como Funciona <ChevronRight size={16} />
+          </a>
+          <a href="#planos" onClick={() => setIsMobileMenuOpen(false)} className="text-[#111827] text-[16px] font-medium flex items-center gap-2 hover:text-[#C5A059]">
+            Valores <ChevronRight size={16} />
+          </a>
+          <a href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="text-[#111827] text-[16px] font-medium flex items-center gap-2 hover:text-[#C5A059]">
+            FAQ <ChevronRight size={16} />
+          </a>
+          <a href="#como-funciona" onClick={() => setIsMobileMenuOpen(false)} className="text-[#111827] text-[16px] font-medium flex items-center gap-2 hover:text-[#C5A059]">
+            Por que a CJS Soluções <ChevronRight size={16} />
+          </a>
+        </nav>
 
-         <div className={`flex flex-col items-center gap-8 w-full max-w-xs transition-all duration-700 delay-100 ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <a href="#inicio" onClick={() => setIsMobileMenuOpen(false)} className="text-3xl font-black text-white tracking-tighter mb-4">
-              Digital ForMe <span className="text-[#C5A059]">.</span>
-            </a>
-
-            <nav className="flex flex-col items-center gap-6 w-full">
-              <a href="#como-funciona" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-white/80 hover:text-[#C5A059] transition-colors uppercase tracking-widest w-full text-center py-4 border-b border-white/5">
-                Como Funciona
-              </a>
-              <a href="#planos" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-white/80 hover:text-[#C5A059] transition-colors uppercase tracking-widest w-full text-center py-4 border-b border-white/5">
-                Valores
-              </a>
-              <a href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-white/80 hover:text-[#C5A059] transition-colors uppercase tracking-widest w-full text-center py-4 border-b border-white/5">
-                FAQ
-              </a>
-            </nav>
-
-            <div className="mt-8 w-full">
-              <Button variant="glow" href="#teste" onClick={() => setIsMobileMenuOpen(false)} className="w-full py-6 text-base">
-                Iniciar Demonstração
-              </Button>
-              <p className="text-white/30 text-[10px] text-center mt-6 uppercase tracking-widest">
-                CJS Soluções
-              </p>
-            </div>
-         </div>
+        <div className="flex flex-col items-center w-full">
+          <Button variant="secondary" href="#teste" onClick={() => setIsMobileMenuOpen(false)} className="w-[85%] max-w-xs py-4 text-[15px] !rounded-full bg-[#111827] text-white">
+            Agendar demonstração
+          </Button>
+        </div>
       </div>
     </>
   );
@@ -350,13 +343,13 @@ const TrustSection = () => (
   <div className="py-6 md:py-10 border-y border-slate-100 bg-slate-50/50">
     <div className="max-w-7xl mx-auto px-6">
       <FadeIn>
-        <p className="text-center text-[10px] font-black uppercase tracking-[0.3em] text-[#1A237E]/40 mb-8">
+        <p className="text-center text-[10px] font-black uppercase tracking-[0.3em] text-[#111827]/40 mb-8">
           Tecnologia de Elite Integrada com
         </p>
         <div className="flex flex-wrap justify-center items-center gap-6 md:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
           {/* Logos placeholders - replace with actual paths */}
-          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" alt="Meta" className="h-6 md:h-8" onError={(e) => e.target.style.display='none'} />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-6 md:h-8" onError={(e) => e.target.style.display = 'none'} />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/3840px-Meta_Platforms_Inc._logo.svg.png" alt="Meta" className="h-6 md:h-8" onError={(e) => e.target.style.display = 'none'} />
         </div>
       </FadeIn>
     </div>
@@ -371,15 +364,15 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(isElite ? `Olá, gostaria de falar com um estrategista sobre o Plano ${title}.` : `Olá, gostaria de contratar o Plano ${title}.`)}`;
 
   const cardStyles = {
-    standard: "bg-white border-slate-200 shadow-2xl text-[#1A237E]",
-    highlighted: "bg-white border-[#C5A059]/40 shadow-2xl scale-105 z-10 text-[#1A237E]",
-    elite: "bg-[#050A24] border-2 border-[#C5A059] shadow-[0_40px_100px_rgba(5,10,36,0.5)] text-white"
+    standard: "bg-white border-slate-200 shadow-2xl text-[#111827] hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]",
+    highlighted: "bg-white border-[#C5A059]/40 shadow-2xl scale-105 z-10 text-[#111827] hover:scale-110 hover:-translate-y-3 hover:shadow-[0_30px_60px_rgba(197,160,89,0.3)]",
+    elite: "bg-[#111827] border-2 border-[#C5A059] shadow-[0_40px_100px_rgba(5,10,36,0.5)] text-white hover:scale-105 hover:-translate-y-2 hover:shadow-[0_40px_100px_rgba(197,160,89,0.6)]"
   };
 
   return (
-    <div className={`p-6 md:p-8 rounded-[32px] md:rounded-[56px] flex flex-col h-full transition-all duration-700 border text-center items-center relative ${cardStyles[variant]}`}>
+    <div className={`p-6 md:p-8 rounded-[32px] md:rounded-[56px] flex flex-col h-full transition-all duration-500 border text-center items-center relative ${cardStyles[variant]}`}>
       {popular && (
-        <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#1A237E] text-[#C5A059] px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-xl border border-[#C5A059]/40 z-20">
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#111827] text-[#C5A059] px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-xl border border-[#C5A059]/40 z-20">
           Popular
         </div>
       )}
@@ -393,12 +386,12 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
         <p className={`text-[10px] font-bold uppercase tracking-[0.4em] mb-4 ${isElite ? 'text-[#C5A059]' : 'text-slate-400'}`}>{subtitle}</p>
         {description && <p className={`text-xs font-medium leading-relaxed px-4 ${isElite ? 'text-blue-100/60' : 'text-slate-500'}`}>{description}</p>}
       </div>
-      
+
       <div className="flex flex-col items-center mb-8">
         {savings && (
-           <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
-             {savings}
-           </div>
+          <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3">
+            {savings}
+          </div>
         )}
         <div className="flex items-baseline gap-2">
           {isElite && <span className="text-sm font-bold opacity-60 mr-1 text-[#C5A059]">a partir de</span>}
@@ -419,9 +412,9 @@ const PlanCard = ({ title, price, features, variant = 'standard', subtitle = "",
         ))}
       </ul>
 
-      <Button 
-        variant={isElite ? 'glow' : (isHighlighted ? 'secondary' : 'outline')} 
-        className="w-full" 
+      <Button
+        variant={isElite ? 'glow' : (isHighlighted ? 'secondary' : 'outline')}
+        className="w-full"
         href={whatsappUrl}
         onClick={(e) => {
           e.preventDefault();
@@ -442,12 +435,12 @@ const FAQItem = ({ question, answer }) => {
     <div className="border-b border-slate-200 last:border-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-6 flex items-center justify-between text-left focus:outline-none group"
+        className="w-full py-6 flex items-center justify-between text-left focus:outline-none group transition-all duration-300 hover:pl-2"
       >
-        <span className={`text-base md:text-lg font-bold transition-colors ${isOpen ? 'text-[#C5A059]' : 'text-[#1A237E] group-hover:text-[#C5A059]'}`}>
+        <span className={`text-base md:text-lg font-bold transition-all duration-300 ${isOpen ? 'text-[#C5A059] scale-105 origin-left' : 'text-[#111827] group-hover:text-[#C5A059]'}`}>
           {question}
         </span>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ${isOpen ? 'bg-[#C5A059] text-white rotate-90' : 'bg-[#1A237E]/5 text-[#1A237E] group-hover:bg-[#C5A059]/10'}`}>
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500 flex-shrink-0 ${isOpen ? 'bg-[#C5A059] text-white rotate-90 scale-110 shadow-lg' : 'bg-[#111827]/5 text-[#111827] group-hover:bg-[#C5A059]/10 group-hover:rotate-12'}`}>
           <ChevronRight size={20} />
         </div>
       </button>
@@ -488,7 +481,7 @@ const FAQSection = () => {
     <Section id="faq" className="bg-slate-50/50">
       <FadeIn>
         <div className="text-center mb-12 md:mb-20">
-          <h2 className="text-3xl md:text-6xl font-black text-[#1A237E] mb-6 tracking-tighter">Dúvidas <span className="text-[#C5A059]">Frequentes</span></h2>
+          <h2 className="text-3xl md:text-6xl font-black text-[#111827] mb-6 tracking-tighter">Dúvidas <span className="text-[#C5A059]">Frequentes</span></h2>
           <p className="text-lg text-slate-500 font-light max-w-2xl mx-auto">
             Entenda como nossa tecnologia CRM + IA impulsiona seu negócio.
           </p>
@@ -528,12 +521,12 @@ const TestimonialsSection = () => {
 
   return (
     <Section id="depoimentos" className="bg-white relative overflow-hidden border-t border-slate-100">
-       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#C5A059]/5 via-transparent to-transparent pointer-events-none"></div>
-       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#C5A059]/5 rounded-full blur-[120px] pointer-events-none"></div>
-       
-       <FadeIn>
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#C5A059]/5 via-transparent to-transparent pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#C5A059]/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+      <FadeIn>
         <div className="text-center mb-12 md:mb-20">
-          <h2 className="text-3xl md:text-6xl font-black text-[#1A237E] mb-6 tracking-tighter">Quem usa <span className="text-[#C5A059]">Aprova</span></h2>
+          <h2 className="text-3xl md:text-6xl font-black text-[#111827] mb-6 tracking-tighter">Quem usa <span className="text-[#C5A059]">Aprova</span></h2>
           <p className="text-lg text-slate-500 font-light max-w-2xl mx-auto">
             Veja como empresas estão escalando suas operações com nossa tecnologia.
           </p>
@@ -547,30 +540,30 @@ const TestimonialsSection = () => {
               <div className="absolute top-6 right-8 text-[#C5A059]/20 group-hover:text-[#C5A059]/40 transition-colors">
                 <Quote size={40} />
               </div>
-              
+
               <div className="flex items-center gap-5 mb-6">
                 <div className="relative">
                   <div className="absolute inset-0 bg-[#C5A059] rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                  <img 
-                    src={t.image} 
-                    alt={t.name} 
+                  <img
+                    src={t.image}
+                    alt={t.name}
                     className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg relative z-10"
                   />
                 </div>
                 <div>
-                  <p className="font-bold text-[#1A237E] text-lg">{t.name}</p>
+                  <p className="font-bold text-[#111827] text-lg">{t.name}</p>
                   <p className="text-[11px] text-slate-400 uppercase tracking-wider font-bold">{t.role}</p>
                 </div>
               </div>
-              
+
               <div className="flex-grow mb-6">
-                 <p className="text-slate-600 italic leading-relaxed relative z-10 text-sm md:text-base">
-                   "{t.text}"
-                 </p>
+                <p className="text-slate-600 italic leading-relaxed relative z-10 text-sm md:text-base">
+                  "{t.text}"
+                </p>
               </div>
-              
+
               <div className="flex text-[#C5A059] gap-1 opacity-80">
-                {[1,2,3,4,5].map(star => <Star key={star} size={16} fill="currentColor" className="drop-shadow-sm" />)}
+                {[1, 2, 3, 4, 5].map(star => <Star key={star} size={16} fill="currentColor" className="drop-shadow-sm" />)}
               </div>
             </div>
           </FadeIn>
@@ -581,618 +574,192 @@ const TestimonialsSection = () => {
 };
 
 const CrmDashboardPreview = () => {
-  const containerRef = useRef(null);
-  // --- STATE MANAGEMENT ---
-  const [activeTab, setActiveTab] = useState('chat');
-  const [activeContactId, setActiveContactId] = useState(1);
-  const [inputText, setInputText] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('todos');
-  const [rightOpen, setRightOpen] = useState(true);
-  const [leftOpen, setLeftOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [automations, setAutomations] = useState({
-    followUp: true,
-    inactiveRecovery: false,
-    welcomeMessage: true,
-  });
-  const [contactsPage, setContactsPage] = useState(1);
-  const contactsPerPage = 4;
-
-  // --- MOCK DATA ---
-  const [contacts, setContacts] = useState([
-    { id: 1, name: 'João Silva', phone: '+55 11 99999-9999', avatar: 'JS', status: 'Novo', color: '#3b82f6', unread: 2, tags: [{name: 'Hot Lead', color: '#ef4444'}], lastMsg: 'Gostaria de saber mais sobre o plano.', time: '10:30', email: 'joao.silva@example.com', company: 'Tech Corp', source: 'Instagram Ads' },
-    { id: 2, name: 'Maria Oliveira', phone: '+55 21 98888-8888', avatar: 'MO', status: 'Concluído', color: '#22c55e', unread: 0, tags: [], lastMsg: 'Obrigado pelo atendimento!', time: 'Ontem', email: 'maria.o@example.com', company: 'Oliveira & Filhos', source: 'Site' },
-    { id: 3, name: 'Pedro Santos', phone: '+55 31 97777-7777', avatar: 'PS', status: 'Aguardando', color: '#eab308', unread: 0, tags: [{name: 'Dúvida', color: '#a855f7'}], lastMsg: 'Qual o valor da integração?', time: 'Ontem', email: 'pedro.santos@example.com', company: 'Santos Advocacia', source: 'Indicação' },
-    { id: 4, name: 'Ana Costa', phone: '+55 41 96666-6666', avatar: 'AC', status: 'Em Atendimento', color: '#3b82f6', unread: 1, tags: [{name: 'Urgente', color: '#ef4444'}], lastMsg: 'Pode me ligar?', time: '09:15', email: 'ana.costa@example.com', company: 'Costa Design', source: 'Google Ads' },
-    { id: 5, name: 'Lucas Pereira', phone: '+55 51 95555-5555', avatar: 'LP', status: 'Novo', color: '#3b82f6', unread: 0, tags: [], lastMsg: 'Olá, bom dia.', time: 'Segunda', email: 'lucas.p@example.com', company: 'Pereira Transportes', source: 'Facebook' },
-    { id: 6, name: 'Carla Dias', phone: '+55 61 94444-4444', avatar: 'CD', status: 'Novo', color: '#3b82f6', unread: 5, tags: [{name: 'VIP', color: '#C5A059'}], lastMsg: 'Tenho interesse no plano Corporativo', time: 'Segunda', email: 'carla.dias@example.com', company: 'Dias & Associados', source: 'LinkedIn' },
-    { id: 7, name: 'Marcos Lima', phone: '+55 71 93333-3333', avatar: 'ML', status: 'Concluído', color: '#22c55e', unread: 0, tags: [], lastMsg: 'Perfeito, contrato assinado!', time: 'Sexta', email: 'marcos.lima@example.com', company: 'Construtora Lima', source: 'Site' },
-  ]);
-
-  const [chats, setChats] = useState({
-    1: [{ id: 1, role: 'assistant', content: 'Olá João! 👋 Vi que você se interessou pelo nosso plano Elite. Posso tirar alguma dúvida sobre a implementação?', time: '10:28' }, { id: 2, role: 'user', content: 'Gostaria de saber mais sobre o plano.', time: '10:29' }],
-    2: [{ id: 1, role: 'assistant', content: 'Oi Maria, seu pedido foi confirmado!', time: 'Ontem' }, { id: 2, role: 'user', content: 'Obrigado pelo atendimento!', time: 'Ontem' }],
-    3: [{ id: 1, role: 'user', content: 'Qual o valor da integração?', time: 'Ontem' }],
-    4: [{ id: 1, role: 'assistant', content: 'Como posso ajudar?', time: '09:00' }, { id: 2, role: 'user', content: 'Pode me ligar?', time: '09:15' }],
-    5: [{ id: 1, role: 'user', content: 'Olá, bom dia.', time: 'Segunda' }],
-    6: [{ id: 1, role: 'user', content: 'Tenho interesse no plano Corporativo', time: 'Segunda' }],
-    7: [{ id: 1, role: 'assistant', content: 'Ficamos felizes em tê-lo como parceiro, Marcos!', time: 'Sexta' }, { id: 2, role: 'user', content: 'Perfeito, contrato assinado!', time: 'Sexta' }],
-  });
-
-  const chatContainerRef = useRef(null);
-
-  // --- EFFECTS ---
-  useEffect(() => {
-    const observer = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        const { width } = entry.contentRect;
-        const mobile = width < 768;
-        setIsMobile(mobile);
-        if (mobile) {
-          setLeftOpen(true);
-          setRightOpen(false);
-        } else {
-          setLeftOpen(true);
-          setRightOpen(true);
-        }
-      }
-    });
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    let timeouts = [];
-    if (activeContactId === 1 && chats[1]?.length === 2) {
-      timeouts.push(setTimeout(() => setIsTyping(true), 1500));
-      timeouts.push(setTimeout(() => {
-        setIsTyping(false);
-        setChats(prev => ({
-          ...prev,
-          1: [...prev[1], { id: 3, role: 'assistant', content: 'Entendido! O plano Elite é ideal para escalar sua operação. Ele inclui:\n\n✅ CRM Multicanal\n✅ Automação de Vendas com IA\n✅ API Oficial do WhatsApp\n\nQuer agendar uma demonstração rápida?', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]
-        }));
-      }, 5500));
-    }
-    return () => timeouts.forEach(clearTimeout);
-  }, [activeContactId, chats]);
-
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [chats, activeContactId, activeTab, isTyping]);
-
-  // --- HANDLERS ---
-  const handleSendMessage = useCallback((e) => {
-    e?.preventDefault();
-    if (!inputText.trim()) return;
-
-    const newMsg = { id: Date.now(), role: 'assistant', content: inputText, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-    setChats(prev => ({ ...prev, [activeContactId]: [...(prev[activeContactId] || []), newMsg] }));
-    setInputText('');
-
-    setTimeout(() => {
-      const replyMsg = { id: Date.now() + 1, role: 'user', content: 'Entendi, muito obrigado! Vou analisar.', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-      setChats(prev => ({ ...prev, [activeContactId]: [...(prev[activeContactId] || []), replyMsg] }));
-    }, 2000);
-  }, [inputText, activeContactId]);
-
-  const handleAutomationToggle = (key) => {
-    setAutomations(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  // --- MEMOIZED VALUES ---
-  const filteredContacts = useMemo(() => contacts.filter(c => {
-    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || c.phone.includes(searchTerm);
-    const matchesFilter = filterStatus === 'todos' ? true : filterStatus === 'unread' ? c.unread > 0 : filterStatus === 'waiting' ? c.status === 'Aguardando' : true;
-    return matchesSearch && matchesFilter;
-  }), [contacts, searchTerm, filterStatus]);
-
-  const activeContact = useMemo(() => contacts.find(c => c.id === activeContactId) || contacts[0], [contacts, activeContactId]);
-  const activeMessages = useMemo(() => chats[activeContactId] || [], [chats, activeContactId]);
-
-  // --- RENDER HELPERS & SUB-COMPONENTS ---
-
-  const renderSidebarItem = (id, icon, label) => (
-    <button onClick={() => setActiveTab(id)} className={`p-3 rounded-xl transition-all duration-300 group relative flex justify-center ${activeTab === id ? 'bg-[#C5A059] text-white shadow-lg shadow-amber-900/50' : 'text-slate-400 hover:bg-white/10 hover:text-white'}`} title={label}>
-      {icon}
-      {activeTab === id && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full -ml-4 hidden md:block"></div>}
-    </button>
-  );
-
-  const StatCard = ({ icon, label, value, color, change }) => (
-    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
-      <div className="flex items-center justify-between mb-2 md:mb-4">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center`} style={{ backgroundColor: `${color}1A` }}>
-          {React.cloneElement(icon, { color, size: 20 })}
-        </div>
-        <div className={`flex items-center text-xs font-bold ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-          <TrendingUp size={14} className="mr-1" /> {change}%
-        </div>
-      </div>
-      <p className="text-2xl md:text-3xl font-black text-gray-800">{value}</p>
-      <p className="text-xs md:text-sm text-gray-500 font-medium">{label}</p>
+  return (
+    <div className="w-full h-auto flex bg-white overflow-hidden">
+      <img
+        src="/crm_dashboard_mockup.png"
+        alt="Demonstração do CRM"
+        className="w-full h-auto object-cover mix-blend-multiply"
+      />
     </div>
   );
+};
+const ProductsSection = () => {
+  const [activeTab, setActiveTab] = useState('atendai');
 
-  const DashboardView = () => {
-    const lineChartData = useMemo(() => Array.from({ length: 30 }, (_, i) => ({
-      name: format(subDays(new Date(), 29 - i), 'dd/MM'),
-      Atendimentos: 40 + Math.floor(Math.random() * 40) + i * 2,
-      Conversões: 5 + Math.floor(Math.random() * 15) + i * 0.5,
-    })), []);
-
-    const pieChartData = [
-      { name: 'Instagram', value: 400, color: '#8884d8' },
-      { name: 'Google Ads', value: 300, color: '#82ca9d' },
-      { name: 'Site', value: 300, color: '#ffc658' },
-      { name: 'Indicação', value: 200, color: '#ff8042' },
-    ];
-
-    return (
-      <div className="p-4 md:p-8 bg-gray-50 overflow-y-auto h-full">
-        <header className="mb-8">
-          <h1 className="text-3xl font-black text-gray-800">Dashboard</h1>
-          <p className="text-gray-500">Visão geral da sua operação de vendas.</p>
-        </header>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard icon={<MessagesSquare />} label="Novas Conversas" value="1,284" color="#3b82f6" change={12.5} />
-          <StatCard icon={<CheckCircle2 />} label="Leads Qualificados" value="312" color="#22c55e" change={8.2} />
-          <StatCard icon={<Target />} label="Conversões (IA)" value="78" color="#C5A059" change={21.7} />
-          <StatCard icon={<Cpu />} label="Tokens Usados" value="1.2M" color="#8b5cf6" change={5.1} />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-lg mb-4 text-gray-800">Performance de Atendimentos</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={lineChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="Atendimentos" stroke="#3b82f6" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="Conversões" stroke="#22c55e" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-lg mb-4 text-gray-800">Origem dos Leads</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsPieChart>
-                <Pie data={pieChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                  {pieChartData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </RechartsPieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const ContactsView = () => {
-    const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
-    const paginatedContacts = filteredContacts.slice((contactsPage - 1) * contactsPerPage, contactsPage * contactsPerPage);
-
-    return (
-      <div className="p-4 md:p-8 bg-gray-50 overflow-y-auto h-full flex flex-col">
-        <header className="mb-8">
-          <h1 className="text-3xl font-black text-gray-800">Contatos</h1>
-          <p className="text-gray-500">Gerencie todos os seus leads e clientes.</p>
-        </header>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 flex flex-col overflow-hidden">
-          <div className="p-4 border-b flex justify-between items-center flex-shrink-0">
-            <div className="relative w-full max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <input type="text" placeholder="Buscar contatos..." className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" onChange={e => setSearchTerm(e.target.value)} value={searchTerm} />
-            </div>
-            <Button variant="secondary" className="py-2 px-4 text-xs rounded-xl hidden sm:flex"><Plus size={16} /> Novo Contato</Button>
-            <Button variant="secondary" className="p-2 text-xs rounded-xl sm:hidden"><Plus size={16} /></Button>
-          </div>
-          <div className="flex-1 overflow-auto">
-            {/* Desktop Table */}
-            <table className="w-full text-sm text-left text-gray-500 hidden md:table">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3">Nome</th>
-                  <th scope="col" className="px-6 py-3">Status</th>
-                  <th scope="col" className="px-6 py-3">Tags</th>
-                  <th scope="col" className="px-6 py-3">Última Mensagem</th>
-                  <th scope="col" className="px-6 py-3"><span className="sr-only">Ações</span></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {paginatedContacts.map(contact => (
-                  <tr key={contact.id} className="bg-white hover:bg-gray-50">
-                    <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" style={{backgroundColor: contact.color}}>{contact.avatar}</div>
-                      <div>
-                        {contact.name}
-                        <p className="font-normal text-gray-500">{contact.phone}</p>
-                      </div>
-                    </th>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 text-[10px] rounded-full font-bold" style={{ backgroundColor: `${contact.color}20`, color: contact.color }}>{contact.status}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-1.5">
-                        {contact.tags.map(tag => <span key={tag.name} className="px-2 py-1 text-[10px] rounded-md font-bold text-white" style={{backgroundColor: tag.color}}>{tag.name}</span>)}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600 italic truncate max-w-xs">"{contact.lastMsg}"</td>
-                    <td className="px-6 py-4 text-right">
-                      <button className="p-2 hover:bg-gray-100 rounded-full"><MoreVertical size={16} /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Mobile Card List */}
-            <div className="md:hidden divide-y divide-gray-100">
-              {paginatedContacts.map(contact => (
-                <div key={contact.id} className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-base flex-shrink-0" style={{backgroundColor: contact.color}}>{contact.avatar}</div>
-                      <div>
-                        <p className="font-bold text-gray-900">{contact.name}</p>
-                        <p className="text-xs text-gray-500">{contact.phone}</p>
-                      </div>
-                    </div>
-                    <button className="p-2 -mr-2 text-gray-400 hover:bg-gray-100 rounded-full"><MoreVertical size={16} /></button>
-                  </div>
-                  <div className="mt-3 text-xs text-gray-600 italic truncate">"{contact.lastMsg}"</div>
-                  <div className="mt-3 flex justify-between items-center">
-                    <div className="flex gap-1.5 flex-wrap">
-                      {contact.tags.map(tag => <span key={tag.name} className="px-2 py-1 text-[10px] rounded-md font-bold text-white" style={{backgroundColor: tag.color}}>{tag.name}</span>)}
-                    </div>
-                    <span className="px-2 py-1 text-[10px] rounded-full font-bold flex-shrink-0" style={{ backgroundColor: `${contact.color}20`, color: contact.color }}>{contact.status}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="p-4 border-t flex justify-between items-center flex-shrink-0">
-            <span className="text-xs text-gray-500">Página {contactsPage} de {totalPages}</span>
-            <div className="flex gap-2">
-              <button onClick={() => setContactsPage(p => Math.max(1, p - 1))} disabled={contactsPage === 1} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
-              <button onClick={() => setContactsPage(p => Math.min(totalPages, p + 1))} disabled={contactsPage === totalPages} className="px-3 py-1.5 text-xs font-bold rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed">Próximo</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const AutomationsView = () => {
-    const AutomationCard = ({ icon, title, description, status, onToggle }) => (
-      <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4 md:gap-6">
-        <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
-          {icon}
-        </div>
-        <div className="flex-1">
-          <h3 className="font-bold text-gray-800">{title}</h3>
-          <p className="text-sm text-gray-500 mt-1">{description}</p>
-        </div>
-        <button onClick={onToggle} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${status ? 'bg-blue-600' : 'bg-gray-200'}`}>
-          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${status ? 'translate-x-6' : 'translate-x-1'}`} />
-        </button>
-      </div>
-    );
-
-    return (
-      <div className="p-4 md:p-8 bg-gray-50 overflow-y-auto h-full">
-        <header className="mb-8">
-          <h1 className="text-3xl font-black text-gray-800">Automações</h1>
-          <p className="text-gray-500">Configure os robôs que trabalham por você 24/7.</p>
-        </header>
-        <div className="space-y-6 max-w-3xl">
-          <AutomationCard 
-            icon={<RefreshCcw size={24} />}
-            title="Follow-up Inteligente"
-            description="Envia mensagens de acompanhamento automáticas para leads que não respondem."
-            status={automations.followUp}
-            onToggle={() => handleAutomationToggle('followUp')}
-          />
-          <AutomationCard 
-            icon={<Zap size={24} />}
-            title="Recuperação de Inativos"
-            description="Reativa clientes antigos com ofertas e novidades personalizadas."
-            status={automations.inactiveRecovery}
-            onToggle={() => handleAutomationToggle('inactiveRecovery')}
-          />
-          <AutomationCard 
-            icon={<MessageSquareText size={24} />}
-            title="Mensagem de Boas-vindas"
-            description="Saúda novos contatos instantaneamente e inicia a qualificação."
-            status={automations.welcomeMessage}
-            onToggle={() => handleAutomationToggle('welcomeMessage')}
-          />
-        </div>
-      </div>
-    );
-  };
-
-  const renderActiveView = () => {
-    switch (activeTab) {
-      case 'dashboard': return <DashboardView />;
-      case 'contacts': return <ContactsView />;
-      case 'automations': return <AutomationsView />;
-      case 'chat':
-      default:
-        return (
-          <div className="flex-1 flex flex-col min-w-0 bg-[#efeae2] relative h-full">
-            {/* Header */}
-            <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 flex-shrink-0 z-10 shadow-sm">
-              <div className="flex items-center gap-3">
-                <button onClick={() => setLeftOpen(!leftOpen)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 md:hidden">
-                  <ChevronLeft size={20} />
-                </button>
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm">
-                  {activeContact.avatar}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-800 text-sm md:text-base flex items-center gap-2">
-                    {activeContact.name}
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  </h3>
-                  <p className="text-xs text-gray-500 truncate">Online agora</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 md:gap-2 text-gray-400">
-                <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Search size={20} /></button>
-                <button onClick={() => setRightOpen(!rightOpen)} className={`p-2 hover:bg-gray-100 rounded-full transition-colors ${rightOpen ? 'text-blue-600 bg-blue-50' : ''}`}><MoreVertical size={20} /></button>
-              </div>
-            </header>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 scroll-smooth" ref={chatContainerRef} style={{ backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")' }}>
-               {activeMessages.map((msg, idx) => (
-                 <div key={idx} className={`flex ${msg.role === 'assistant' ? 'justify-end' : 'justify-start'}`}>
-                   <div className={`max-w-[85%] md:max-w-[70%] p-3 md:p-4 rounded-2xl shadow-sm text-sm relative group ${msg.role === 'assistant' ? 'bg-[#d9fdd3] text-gray-800 rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none'}`}>
-                     <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                     <div className="flex justify-end items-center gap-1 mt-1 opacity-70">
-                       <span className="text-[10px]">{msg.time}</span>
-                       {msg.role === 'assistant' && <CheckCircle2 size={12} className="text-blue-500" />}
-                     </div>
-                   </div>
-                 </div>
-               ))}
-               {isTyping && (
-                 <div className="flex justify-end">
-                   <div className="bg-[#d9fdd3] p-4 rounded-2xl rounded-tr-none shadow-sm text-sm text-gray-800 relative flex items-center gap-3 animate-pulse">
-                     <span className="text-xs font-bold text-[#1A237E]">A IA está respondendo</span>
-                     <div className="flex gap-1">
-                       <div className="w-1.5 h-1.5 bg-[#1A237E] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                       <div className="w-1.5 h-1.5 bg-[#1A237E] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                       <div className="w-1.5 h-1.5 bg-[#1A237E] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                     </div>
-                   </div>
-                 </div>
-               )}
-            </div>
-
-            {/* Footer */}
-            <footer className="p-3 md:p-4 bg-[#f0f2f5] border-t border-gray-200 flex items-end gap-2 md:gap-3">
-              <div className="flex gap-1 mb-2">
-                 <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full transition-colors"><Plus size={20} /></button>
-              </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-200 flex items-center focus-within:ring-2 focus-within:ring-blue-100 transition-all shadow-sm min-h-[48px]">
-                <textarea 
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) handleSendMessage(e); }}
-                  placeholder="Digite sua mensagem..." 
-                  className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-400 px-4 py-3 resize-none max-h-32"
-                  rows={1}
-                />
-                <div className="flex items-center pr-2 gap-1">
-                   <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"><Paperclip size={18} /></button>
-                   <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"><ImageIcon size={18} /></button>
-                </div>
-              </div>
-              <div className="mb-1">
-                {inputText.trim() ? (
-                  <button onClick={handleSendMessage} className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 transform hover:scale-105 active:scale-95">
-                    <Send size={20} className="ml-0.5" />
-                  </button>
-                ) : (
-                  <button className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 transform hover:scale-105 active:scale-95">
-                    <Mic size={20} />
-                  </button>
-                )}
-              </div>
-            </footer>
-          </div>
-        );
+  const productsData = [
+    {
+      id: 'atendai',
+      shortName: 'AtendAI',
+      icon: <MessageSquare size={20} />,
+      title: 'Assistente Virtual Inteligente & CRM',
+      description: 'A plataforma AtendAI utiliza infraestrutura em nuvem integrada à IA do Google e WhatsApp Oficial para interagir, qualificar leads e fechar vendas 24 horas por dia.',
+      listTitle: 'O que a plataforma faz por você em tempo real:',
+      points: [
+        'Respostas humanizadas e instantâneas em texto, áudio e imagem',
+        'Follow-up inteligente para reengajar clientes ociosos automaticamente',
+        'Disparo em massa de campanhas e promoções no WhatsApp',
+        'Painel gerencial completo para acompanhar métricas e conversões'
+      ],
+      closing: 'Pague apenas pelo que usar (pay-as-you-go), sem taxas ocultas. A IA age estrategicamente no momento certo para escalar seu atendimento.',
+      cta: 'Converse com a IA no WhatsApp',
+      ctaLink: '#teste',
+      image: '/atendai.png'
+    },
+    {
+      id: 'prospectai',
+      shortName: 'ProspectAI',
+      icon: <Target size={20} />,
+      title: 'Máquina de Prospecção Inteligente',
+      description: 'Motor de prospecção de alta performance, projetado para abordar grandes listas de contatos, quebrar o gelo e encontrar os clientes ideais para o seu negócio.',
+      listTitle: 'Na prática, o sistema realiza:',
+      points: [
+        'Início de conversas e quebra de gelo de forma 100% autônoma',
+        'Triagem de curiosos, entregando apenas leads quentes aos vendedores',
+        'Centralização de todas as interações e respostas em uma única tela',
+        'Testes de novos nichos de mercado de forma rápida e com baixo custo'
+      ],
+      closing: 'Custos atrelados diretamente ao seu crescimento. A prospecção é ativada instantaneamente assim que você importa suas listas de leads.',
+      cta: 'Conhecer os Planos',
+      ctaLink: '#planos',
+      image: '/prospectai.png'
+    },
+    {
+      id: 'integraai',
+      shortName: 'IntegraAI',
+      icon: <LayoutDashboard size={20} />,
+      title: 'Hub Omnichannel & ERP Inteligente',
+      description: 'Um sistema robusto e seguro para integrar Mercado Livre, Magento, Correios e emissão de Notas Fiscais em um só lugar, eliminando o trabalho manual da sua operação.',
+      listTitle: 'Como simplificamos o seu dia a dia:',
+      points: [
+        'Sincronização instantânea de estoque em múltiplos canais de venda',
+        'Emissão automática de Notas Fiscais (NFe) e etiquetas de envio',
+        'Centralização de anúncios e gerenciamento de pedidos em uma única tela',
+        'Disparo de e-mails para nutrir, engajar e enviar rastreios aos clientes'
+      ],
+      closing: 'Operação Zero Clique: o pedido entra no sistema e é faturado automaticamente. Mensalidade flexível baseada apenas no seu volume de vendas.',
+      cta: 'Agendar uma Demonstração',
+      ctaLink: '#teste',
+      image: '/integraai.png'
+    },
+    {
+      id: 'atendailite',
+      shortName: 'AtendAI Lite',
+      icon: <Bot size={20} />,
+      title: 'Sua Secretária Virtual no WhatsApp',
+      description: 'O poder da Inteligência Artificial do Google conectada diretamente ao seu WhatsApp e Google Agenda de forma totalmente simplificada, sem painéis complexos.',
+      listTitle: 'O que a sua secretária faz 24/7:',
+      points: [
+        'Escuta áudios e responde textos simulando o tempo de digitação real',
+        'Marca reuniões automaticamente de acordo com a sua disponibilidade',
+        'Recebe novos contatos, tira dúvidas técnicas e faz a triagem inicial',
+        'Gestão completa diretamente por comandos de mensagem no WhatsApp'
+      ],
+      closing: 'Modelo de recarga de tokens 100% transparente. Ganhe um Trial Gratuito para começar e, depois, escale com pacotes a partir de R$ 29,90.',
+      cta: 'Ativar meu Robô Agora',
+      ctaLink: '#teste',
+      image: '/atendailite.png'
+    },
+    {
+      id: 'geoscraper',
+      shortName: 'GeoScraper',
+      icon: <Search size={20} />,
+      title: 'Automação de Prospecção em Massa',
+      description: 'Aplicação de alta performance que mapeia regiões, varre dados em grade e valida números de WhatsApp em tempo real para alimentar seu funil de vendas.',
+      listTitle: 'Como funciona a varredura inteligente:',
+      points: [
+        'Descobre e filtra empresas por região geográfica e nicho de mercado',
+        'Coleta endereços, avaliações de clientes e valida o número de WhatsApp',
+        'Processa listas enormes em segundo plano enquanto você trabalha',
+        'Sistema anti-duplicação rigoroso que impede cobrança por leads repetidos'
+      ],
+      closing: 'Gere listas aceleradas de contatos B2B. Acione a plataforma sob demanda, com custos focados apenas em leads reais e validados.',
+      cta: 'Começar a Mapear',
+      ctaLink: '#teste',
+      image: '/geoscraper.png'
     }
-  };
+  ];
+
+  const activeProduct = productsData.find(p => p.id === activeTab);
 
   return (
-    <div ref={containerRef} className="w-full h-full flex flex-col md:flex-row bg-white overflow-hidden">
-      
-      {/* 1. App Sidebar (Leftmost) */}
-      <aside className="w-full md:w-20 bg-[#0f172a] text-white flex flex-row md:flex-col items-center py-4 md:py-6 gap-2 md:gap-6 flex-shrink-0 z-30 justify-between md:justify-start px-4 md:px-0">
-        <div className="bg-blue-600/20 w-10 h-10 flex items-center justify-center rounded-xl text-[#C5A059] mb-0 md:mb-4">
-          <span className="font-black text-lg md:text-xl">A</span>
-        </div>
-        
-        <nav className="flex flex-row md:flex-col gap-2 md:gap-4">
-          {renderSidebarItem('dashboard', <LayoutDashboard size={22} />, 'Dashboard')}
-          {renderSidebarItem('chat', <MessageSquareText size={22} />, 'Atendimentos')}
-          {renderSidebarItem('contacts', <User size={22} />, 'Contatos')}
-          {renderSidebarItem('automations', <Bot size={22} />, 'Automações')}
-        </nav>
-
-        <div className="mt-auto hidden md:block p-3 text-slate-400 hover:text-white cursor-pointer transition-colors">
-          <LogOut size={22} />
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex overflow-hidden relative">
-        {activeTab === 'chat' ? (
-          <div className="flex flex-1 overflow-hidden">
-            {/* 2. Contact List Sidebar */}
-            <aside className={`${!isMobile || leftOpen ? 'flex' : 'hidden'} w-full md:w-80 bg-white border-r border-gray-200 flex-col transition-all duration-300 ease-in-out z-20 h-full`}>
-              <div className="p-4 border-b border-gray-100 flex-shrink-0">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-xl text-gray-800">Conversas</h2>
-                  <div className="flex gap-2">
-                    <button className="p-2 hover:bg-gray-100 rounded-full text-gray-500"><Edit size={18} /></button>
-                    {isMobile && <button onClick={() => setLeftOpen(false)} className="p-2 hover:bg-gray-100 rounded-full text-gray-500" aria-label="Fechar lista de contatos"><X size={18} /></button>}
-                  </div>
-                </div>
-                
-                <div className="relative mb-4">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                  <input type="text" placeholder="Buscar conversa..." className="w-full pl-9 pr-4 py-2.5 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-                </div>
-
-                <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                  {['todos', 'unread', 'waiting'].map(f => (
-                    <button key={f} onClick={() => setFilterStatus(f)} className={`px-3 py-1.5 text-xs font-bold rounded-full whitespace-nowrap transition-all ${filterStatus === f ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
-                      {f === 'todos' ? 'Todos' : f === 'unread' ? 'Não lidos' : 'Aguardando'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto">
-                {filteredContacts.map(contact => (
-                  <div key={contact.id} onClick={() => { setActiveContactId(contact.id); if (isMobile) setLeftOpen(false); }} className={`p-4 border-b border-gray-50 cursor-pointer transition-all hover:bg-gray-50 ${activeContactId === contact.id ? 'bg-blue-50/50 border-l-4 border-l-blue-600' : 'border-l-4 border-l-transparent'}`}>
-                    <div className="flex gap-3">
-                      <div className="relative">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-600 font-bold text-sm border border-gray-200">
-                          {contact.avatar}
-                        </div>
-                        {contact.unread > 0 && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-[10px] flex items-center justify-center rounded-full font-bold border-2 border-white">
-                            {contact.unread}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-1">
-                          <h4 className={`text-sm truncate ${activeContactId === contact.id ? 'font-bold text-gray-900' : 'font-semibold text-gray-700'}`}>{contact.name}</h4>
-                          <span className="text-[10px] text-gray-400 whitespace-nowrap ml-2">{contact.time}</span>
-                        </div>
-                        <p className={`text-xs truncate mb-2 ${contact.unread > 0 ? 'font-semibold text-gray-800' : 'text-gray-500'}`}>{contact.lastMsg}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 text-[10px] rounded-full font-bold bg-opacity-10" style={{ backgroundColor: `${contact.color}20`, color: contact.color }}>
-                            {contact.status}
-                          </span>
-                          {contact.tags.map((tag, i) => (
-                            <span key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} title={tag.name}></span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </aside>
-
-            <main className={`flex-1 flex-col min-w-0 ${isMobile && leftOpen ? 'hidden' : 'flex'}`}>
-              <div className="flex-1 flex overflow-hidden">
-                {/* 3. Main View Area */}
-                {renderActiveView()}
-    
-                {/* 4. Profile Sidebar (Right) */}
-                <aside className={`${rightOpen ? 'w-full md:w-80 translate-x-0' : 'w-0 translate-x-full md:opacity-0'} bg-white border-l border-gray-200 flex-col overflow-y-auto transition-all duration-300 ease-in-out absolute md:relative right-0 h-full z-20 shadow-xl md:shadow-none`}>
-                  <div className="p-6 flex flex-col items-center border-b border-gray-100 relative flex-shrink-0">
-                    <button onClick={() => setRightOpen(false)} className="absolute left-4 top-4 p-2 text-gray-400 hover:bg-gray-100 rounded-full md:hidden" aria-label="Fechar perfil">
-                      <X size={20} />
-                    </button>
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-3xl font-bold text-gray-500 mb-4 shadow-inner border-4 border-white">
-                      {activeContact.avatar}
-                    </div>
-                    <h3 className="font-bold text-xl text-gray-800 text-center">{activeContact.name}</h3>
-                    <p className="text-sm text-gray-500 mb-4 font-medium">{activeContact.phone}</p>
-                    
-                    <div className="flex gap-3 w-full">
-                      <button className="flex-1 py-2 bg-gray-100 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-                        <Phone size={14} /> Ligar
-                      </button>
-                      <button className="flex-1 py-2 bg-gray-100 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-                        <Archive size={14} /> Arquivar
-                      </button>
-                    </div>
-                  </div>
-    
-                  <div className="p-6 space-y-8 overflow-y-auto">
-                    <div>
-                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Status</h4>
-                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: activeContact.color }}></span>
-                          <span className="text-sm font-bold text-gray-700">{activeContact.status}</span>
-                        </div>
-                        <Edit size={14} className="text-gray-400 cursor-pointer hover:text-blue-600" />
-                      </div>
-                    </div>
-    
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2"><Tag size={14} /> Tags</h4>
-                        <button className="text-blue-600 hover:bg-blue-50 p-1 rounded"><Plus size={14} /></button>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {activeContact.tags.length > 0 ? activeContact.tags.map((tag, i) => (
-                          <span key={i} className="px-2.5 py-1 text-xs font-bold text-white rounded-md shadow-sm flex items-center gap-1" style={{ backgroundColor: tag.color }}>
-                            {tag.name}
-                            <X size={10} className="cursor-pointer hover:text-white/80" />
-                          </span>
-                        )) : <span className="text-xs text-gray-400 italic">Sem tags</span>}
-                      </div>
-                    </div>
-    
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2"><FileText size={14} /> Notas</h4>
-                        <button className="text-blue-600 hover:bg-blue-50 p-1 rounded"><Edit size={14} /></button>
-                      </div>
-                      <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100 text-xs text-gray-700 leading-relaxed shadow-sm relative group">
-                        <p>Cliente interessado no plano corporativo. Agendar reunião para próxima semana.</p>
-                        <span className="text-[10px] text-gray-400 block mt-2 text-right">Hoje, 10:00</span>
-                      </div>
-                    </div>
-    
-                    <div>
-                       <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Informações</h4>
-                       <div className="space-y-3">
-                         <div className="flex justify-between text-xs border-b border-gray-100 pb-2">
-                           <span className="text-gray-500">Email</span>
-                           <span className="font-medium text-gray-800 truncate">{activeContact.email}</span>
-                         </div>
-                         <div className="flex justify-between text-xs border-b border-gray-100 pb-2">
-                           <span className="text-gray-500">Empresa</span>
-                           <span className="font-medium text-gray-800">{activeContact.company}</span>
-                         </div>
-                         <div className="flex justify-between text-xs">
-                           <span className="text-gray-500">Origem</span>
-                           <span className="font-medium text-gray-800">{activeContact.source}</span>
-                         </div>
-                       </div>
-                    </div>
-                  </div>
-                </aside>
-              </div>
-            </main>
+    <Section id="solucoes" className="relative bg-white pt-10 md:pt-20 pb-16 md:pb-28 border-t border-slate-100">
+      <div className="max-w-[1200px] mx-auto">
+        <FadeIn>
+          <div className="text-center mb-12">
+            <h4 className="text-[#C5A059] font-black uppercase tracking-[0.2em] text-xs md:text-sm mb-4">Soluções</h4>
+            <h2 className="text-3xl md:text-5xl font-black text-[#111827] tracking-tight">O que você <span className="text-[#C5A059]">Precisa?</span></h2>
           </div>
-        ) : (
-          renderActiveView()
-        )}
+        </FadeIn>
+
+        <FadeIn delay={100}>
+          {/* Tabs Menu */}
+          <div className="flex flex-wrap md:flex-nowrap items-stretch justify-center gap-2 md:gap-4 mb-16 border-b border-gray-100 pt-4 pb-8 overflow-x-auto no-scrollbar px-4">
+            {productsData.map((prod) => (
+              <button
+                key={prod.id}
+                onClick={() => setActiveTab(prod.id)}
+                className={`flex flex-col items-center justify-center p-4 min-w-[140px] md:min-w-[180px] rounded-xl transition-all duration-300 border ${activeTab === prod.id ? 'border-[#C5A059] bg-[#C5A059]/5 shadow-sm scale-105' : 'border-transparent hover:bg-gray-50'}`}
+              >
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-colors ${activeTab === prod.id ? 'bg-[#C5A059] text-white' : 'bg-[#C5A059]/10 text-[#C5A059]'}`}>
+                  {prod.icon}
+                </div>
+                <span className={`text-sm font-bold text-center ${activeTab === prod.id ? 'text-[#111827]' : 'text-gray-500'}`}>
+                  {prod.shortName}
+                </span>
+              </button>
+            ))}
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={200} key={activeTab}>
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center px-4 md:px-0">
+            <div className="flex flex-col">
+              <h3 className="text-3xl md:text-4xl font-medium text-[#111827] mb-6 leading-tight">{activeProduct.title}</h3>
+
+              <p className="text-lg text-gray-500 font-normal mb-8 leading-relaxed">
+                {activeProduct.description}
+              </p>
+
+              <p className="text-gray-500 font-normal mb-6">
+                {activeProduct.listTitle}
+              </p>
+
+              <ul className="space-y-5 mb-10">
+                {activeProduct.points.map((point, i) => (
+                  <li key={i} className="flex items-start gap-4 text-gray-600 font-medium text-[15px]">
+                    <div className="mt-1 w-[22px] h-[22px] rounded-full bg-[#C5A059] flex items-center justify-center flex-shrink-0 text-white shadow-sm">
+                      <CheckCircle2 size={14} strokeWidth={3} />
+                    </div>
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <p className="text-gray-500 font-normal leading-relaxed mb-10">
+                {activeProduct.closing}
+              </p>
+
+              <a
+                href={activeProduct.ctaLink}
+                className="text-[#C5A059] font-bold hover:text-[#b08e4d] transition-colors text-lg border-b-2 border-[#C5A059] hover:border-[#b08e4d] inline-block w-fit pb-1"
+              >
+                {activeProduct.cta}
+              </a>
+            </div>
+
+            <div className="relative group">
+              <div className="absolute inset-0 bg-[#C5A059]/10 rounded-[40px] blur-3xl transform group-hover:scale-105 transition-transform duration-700"></div>
+              <div className="bg-white p-4 md:p-6 rounded-[40px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 relative z-10 overflow-hidden">
+                <div className="rounded-[24px] overflow-hidden bg-gray-50 flex items-center justify-center w-full h-auto">
+                  <img src={activeProduct.image} alt={activeProduct.title} className="w-full h-auto transform hover:scale-105 transition-transform duration-700" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </div>
-    </div>
+    </Section>
   );
 };
 
@@ -1213,10 +780,10 @@ export default function App() {
     let value = e.target.value;
     value = value.replace(/\D/g, "");
     if (value.length > 11) value = value.slice(0, 11);
-    
+
     value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
     value = value.replace(/(\d)(\d{4})$/, "$1-$2");
-    
+
     setFormState({ ...formState, phone: value });
   };
 
@@ -1263,75 +830,118 @@ export default function App() {
 
   return (
     <div className="min-h-screen overflow-x-hidden selection:bg-[#C5A059] selection:text-white" id="inicio">
-      <StickyTopBar />
-      <FloatingWhatsApp />
       <Navbar />
 
       {/* Hero Section */}
-      <Section className="pt-[120px] md:pt-[200px] relative overflow-hidden min-h-screen flex flex-col justify-center">
-        {/* Mobile Background Image */}
-        <div className="absolute inset-0 lg:hidden z-0">
-            <img 
-                src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1632&q=80" 
-                alt="Background" 
-                className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px]"></div>
-        </div>
+      <Section className="pt-[120px] md:pt-[200px] relative overflow-hidden min-h-screen flex flex-col justify-center bg-[#f8fafc]">
+        <div className="flex flex-col items-center relative z-10 max-w-[85vw] mx-auto text-center pt-10">
+          <FadeIn direction="down">
+            <h1 className="text-4xl md:text-6xl lg:text-[64px] font-medium text-[#111827] tracking-tight mb-6 leading-[1.15] max-w-4xl mx-auto">
+              Transforme seu WhatsApp em uma <br />
+              <span className="text-[#C5A059] font-black">Máquina de Vendas</span>
+            </h1>
+          </FadeIn>
 
-        {/* Background Blobs */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#C5A059]/10 rounded-full blur-[120px] -z-10 translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#1A237E]/5 rounded-full blur-[100px] -z-10 -translate-x-1/3 translate-y-1/4 pointer-events-none"></div>
+          <FadeIn delay={200}>
+            <p className="text-base md:text-xl text-slate-500 mb-10 leading-relaxed max-w-3xl mx-auto">
+              Atenda, qualifique e feche pedidos 24h por dia. Combine um agente de IA que resolve atendimentos de forma automática com uma plataforma que cabe no bolso e centraliza todos os seus canais. Mais escala, menos custo.
+            </p>
+          </FadeIn>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10 max-w-[85vw] mx-auto">
-          {/* Left Column */}
-          <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
-            <FadeIn direction="down">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1A237E]/5 border border-[#1A237E]/10 text-[#1A237E] text-[10px] font-black uppercase tracking-widest mb-6">
-                <Sparkles size={12} className="text-[#C5A059]" />
-                <span>Nova Tecnologia 2026</span>
-              </div>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#1A237E] tracking-tighter mb-6 leading-[1.1] lg:leading-[1]">
-                Transforme seu WhatsApp em uma <span className="text-[#C5A059] inline-block gold-text-glow">Máquina de Vendas</span>
-              </h1>
-            </FadeIn>
-            
-            <FadeIn delay={200}>
-              <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed font-medium max-w-2xl lg:max-w-none">
-                Atenda, qualifique e feche pedidos 24h por dia. <span className="text-[#1A237E] font-extrabold">Comece a lucrar enquanto dorme.</span>
-              </p>
-            </FadeIn>
-            
-            <FadeIn delay={600} className="w-full">
-              <div className="flex flex-col sm:flex-row items-center gap-4 mb-8 w-full justify-center lg:justify-start">
-                <Button variant="glow" href="#teste" className="w-full sm:w-auto animate-pulse hover:animate-none">Ver demonstração</Button>
-                <Button variant="outline" href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000"}?text=Olá!%20Gostaria%20de%20falar%20com%20um%20consultor.`} target="_blank" className="w-full sm:w-auto border-[#1A237E]/20 text-[#1A237E] hover:bg-[#1A237E]/5">Falar com Consultor</Button>
-              </div>
-              
-              <p className="text-[10px] font-bold text-[#1A237E]/40 uppercase tracking-widest mt-6 text-center">
-                ✓ Teste grátis hoje • ✓ Cancele quando quiser
-              </p>
-            </FadeIn>
-          </div>
+          <FadeIn delay={400} className="flex flex-col items-center w-full">
+            <Button variant="glow" href="#teste" className="w-full sm:w-auto hover:animate-none py-4 px-12 text-base rounded-full !rounded-full mb-8 font-bold">
+              Agendar demonstração
+            </Button>
 
-          {/* Right Column */}
-          <div className="relative hidden lg:flex items-center justify-center">
-             <FadeIn direction="left" delay={300}>
-                <div className="relative mx-auto border-gray-900 bg-gray-800 border-[8px] rounded-[2.5rem] h-[712px] w-[350px] shadow-xl">
-                  <div className="w-[140px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute z-10"></div>
-                  <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[11px] top-[62px] rounded-l-lg"></div>
-                  <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[11px] top-[124px] rounded-l-lg"></div>
-                  <div className="h-[64px] w-[3px] bg-gray-800 absolute -right-[11px] top-[142px] rounded-r-lg"></div>
-                  <div className="rounded-[2rem] overflow-hidden w-full h-full bg-white">
-                    <CrmDashboardPreview />
-                  </div>
+            <a href="#como-funciona" className="text-[#111827] font-semibold text-base md:text-lg flex items-center gap-2 hover:text-[#C5A059] transition-colors mb-14">
+              Por que a CJS Soluções? <ChevronRight size={20} />
+            </a>
+          </FadeIn>
+
+          <FadeIn delay={600} className="flex flex-col items-center mb-16 w-full">
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] text-slate-400 text-xs font-medium mb-6">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/3840px-Meta_Platforms_Inc._logo.svg.png" alt="Meta" className="h-3 object-contain" />
+              <span className="mt-1">Tech Provider</span>
+            </div>
+
+            <div className="flex items-center justify-center bg-white px-6 md:px-8 py-3 md:py-3.5 rounded-full border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+              <div className="flex items-center -space-x-3 md:-space-x-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center relative">
+                  <svg viewBox="0 0 24 24" className="w-5 h-5 md:w-6 md:h-6 text-blue-600" fill="currentColor">
+                    <path d="M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z" />
+                  </svg>
                 </div>
-             </FadeIn>
-          </div>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center relative">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                </div>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center relative">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Google_Gemini_icon_2025.svg" alt="Google Gemini" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                </div>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center relative">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Agenda" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                </div>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center relative">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Google_Sheets_logo_%282014-2020%29.svg" alt="Google Sheets" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                </div>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center relative">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Google Drive" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                </div>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-50 border-2 border-white shadow-sm flex items-center justify-center relative text-slate-400 font-bold text-sm md:text-base animate-bounce">
+                  +
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={800} className="w-full mb-8">
+            <p className="text-center text-base font-medium text-slate-400 mb-8 max-w-md mx-auto">
+              As empresas digitais que mais crescem e confiam na CJS Soluções:
+            </p>
+            <div className="w-full overflow-hidden relative group py-4">
+              {/* Gradiente Lateral Esquerdo (Fade out) */}
+              <div className="absolute -left-1 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-[#f8fafc] to-[#f8fafc]/0 z-10 pointer-events-none"></div>
+              {/* Gradiente Lateral Direito (Fade out) */}
+              <div className="absolute -right-1 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-[#f8fafc] to-[#f8fafc]/0 z-10 pointer-events-none"></div>
+
+              <div className="flex w-max animate-marquee hover:[animation-play-state:paused] items-center">
+                {/* Primeiro Grupo */}
+                <div className="flex items-center justify-center gap-10 md:gap-16 px-5 md:px-8">
+                  <img src="https://media.licdn.com/dms/image/v2/D4D3DAQEFCTo_xv1jtw/image-scale_191_1128/image-scale_191_1128/0/1691009076796/talattopaineis_cover?e=2147483647&v=beta&t=5FeVgbTSkkToL7lDahtUmk7eXpj8ATYKxS3BUeERltw" alt="Talatto" className="h-7 md:h-9 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src="https://www.saojorgelocadora.com.br/img/logo_nova.png" alt="São Jorge Locadora" className="h-8 md:h-10 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src="https://cover4me.pt/assets/img/logo-color-horizontal-cropped.png" alt="Cover4Me" className="h-6 md:h-8 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVMtrarEZgir2RLGoDx-p9OtIDrqi9Rr-V9w&s" alt="Logo 4" className="h-8 md:h-10 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src={logoOdontojet} alt="Odontojet" className="h-8 md:h-10 object-contain brightness-0 opacity-40 hover:opacity-100 transition-all duration-300" />
+                  <img src={logoFerragens} alt="Ferragens" className="h-8 md:h-10 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                </div>
+
+                {/* Segundo Grupo (Clone exato para o loop) */}
+                <div className="flex items-center justify-center gap-10 md:gap-16 px-5 md:px-8">
+                  <img src="https://media.licdn.com/dms/image/v2/D4D3DAQEFCTo_xv1jtw/image-scale_191_1128/image-scale_191_1128/0/1691009076796/talattopaineis_cover?e=2147483647&v=beta&t=5FeVgbTSkkToL7lDahtUmk7eXpj8ATYKxS3BUeERltw" alt="Talatto" className="h-7 md:h-9 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src="https://www.saojorgelocadora.com.br/img/logo_nova.png" alt="São Jorge Locadora" className="h-8 md:h-10 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src="https://cover4me.pt/assets/img/logo-color-horizontal-cropped.png" alt="Cover4Me" className="h-6 md:h-8 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVMtrarEZgir2RLGoDx-p9OtIDrqi9Rr-V9w&s" alt="Logo 4" className="h-8 md:h-10 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                  <img src={logoOdontojet} alt="Odontojet" className="h-8 md:h-10 object-contain brightness-0 opacity-40 hover:opacity-100 transition-all duration-300" />
+                  <img src={logoFerragens} alt="Ferragens" className="h-8 md:h-10 object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={1000} className="mt-12 w-full max-w-4xl mx-auto relative hidden md:block">
+            <div className="flex items-center justify-center gap-2 mb-4 text-xs font-medium text-slate-500">
+              <MessageSquareText size={16} className="text-[#C5A059]" />
+              <span>Atendimento com IA que organiza e escala seu suporte.</span>
+            </div>
+            <div className="relative mx-auto border-slate-200 border border-b-0 rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] overflow-hidden bg-white animate-float">
+              <div className="rounded-t-[2rem] overflow-hidden w-full h-auto bg-white">
+                <CrmDashboardPreview />
+              </div>
+            </div>
+          </FadeIn>
         </div>
       </Section>
 
-      
+
 
       {/* Atendimento 360 Section */}
       <Section id="como-funciona" className="relative">
@@ -1341,239 +951,399 @@ export default function App() {
         <div className="max-w-[1100px] mx-auto">
           <FadeIn>
             <div className="text-center mb-8 md:mb-28">
-              <h2 className="text-4xl md:text-7xl font-black text-[#1A237E] tracking-tighter mb-10 text-center mx-auto">Ecossistema <span className="text-[#C5A059]">360</span></h2>
-              <p className="text-xl md:text-2xl text-slate-500 font-light max-w-3xl mx-auto text-center leading-relaxed">
+              <h2 className="text-4xl md:text-7xl font-black text-[#111827] tracking-tighter mb-10 text-center mx-auto">Ecossistema <span className="text-[#C5A059]">360</span></h2>
+              <p className="text-xl md:text-2xl text-slate-500 font-light max-w-3xl mx-auto text-center leading-relaxed mb-12">
                 Sua operação comercial unificada em uma poderosa plataforma CRM, criando um ciclo infinito de atração e conversão automática.
               </p>
+              <style dangerouslySetInnerHTML={{
+                __html: `
+                @keyframes march {
+                  to { stroke-dashoffset: -16; }
+                }
+                .animate-march {
+                  animation: march 1s linear infinite;
+                }
+                @keyframes float {
+                  0% { transform: translateY(0px); }
+                  50% { transform: translateY(-10px); }
+                  100% { transform: translateY(0px); }
+                }
+                .animate-float {
+                  animation: float 3s ease-in-out infinite;
+                }
+              `}} />
+
+              <div className="relative flex flex-col md:flex-row items-center justify-between max-w-5xl mx-auto mt-10 gap-6 md:gap-0 px-4">
+
+                {/* Loop Arrow removido a pedido do usuário */}
+
+                {/* Card 1 */}
+                <div className="flex flex-col items-center p-6 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-4 hover:scale-105 transition-all duration-500 relative overflow-hidden group w-full md:w-[28%] z-10 hover:shadow-2xl hover:shadow-[#C5A059]/20">
+                  <div className="absolute inset-0 bg-[#C5A059]/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></div>
+                  <div className="w-16 h-16 rounded-full bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center mb-4 relative z-10">
+                    <Target size={32} className="group-hover:scale-125 transition-transform duration-500" />
+                  </div>
+                  <h3 className="text-2xl font-black text-[#111827] mb-1 relative z-10">Prospectar</h3>
+                  <p className="text-sm text-slate-500 font-medium relative z-10">com a <span className="font-bold text-[#C5A059]">ProspectAI</span></p>
+                </div>
+
+                {/* Arrow 1 -> 2 */}
+                <div className="text-[#C5A059] animate-pulse z-10 rotate-90 md:rotate-0 group-hover:scale-125 transition-transform">
+                  <ChevronRight size={40} />
+                </div>
+
+                {/* Card 2 */}
+                <div className="flex flex-col items-center p-6 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-4 hover:scale-105 transition-all duration-500 relative overflow-hidden group w-full md:w-[28%] z-10 hover:shadow-2xl hover:shadow-[#C5A059]/20">
+                  <div className="absolute inset-0 bg-[#C5A059]/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></div>
+                  <div className="w-16 h-16 rounded-full bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center mb-4 relative z-10">
+                    <MessageSquareText size={32} className="group-hover:scale-125 transition-transform duration-500" />
+                  </div>
+                  <h3 className="text-2xl font-black text-[#111827] mb-1 relative z-10">Atender</h3>
+                  <p className="text-sm text-slate-500 font-medium relative z-10">com a <span className="font-bold text-[#C5A059]">AtendAI</span></p>
+                </div>
+
+                {/* Arrow 2 -> 3 */}
+                <div className="text-[#C5A059] animate-pulse z-10 rotate-90 md:rotate-0">
+                  <ChevronRight size={40} />
+                </div>
+
+                {/* Card 3 */}
+                <div className="flex flex-col items-center p-6 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 hover:-translate-y-4 hover:scale-105 transition-all duration-500 relative overflow-hidden group w-full md:w-[28%] z-10 hover:shadow-2xl hover:shadow-[#C5A059]/20">
+                  <div className="absolute inset-0 bg-[#C5A059]/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></div>
+                  <div className="w-16 h-16 rounded-full bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center mb-4 relative z-10">
+                    <LayoutDashboard size={32} className="group-hover:scale-125 transition-transform duration-500" />
+                  </div>
+                  <h3 className="text-2xl font-black text-[#111827] mb-1 relative z-10">Gerenciar</h3>
+                  <p className="text-sm text-slate-500 font-medium relative z-10">com a <span className="font-bold text-[#C5A059]">IntegrAI</span></p>
+                </div>
+              </div>
             </div>
           </FadeIn>
-
-
-          <FadeIn delay={200}>
-            <div className="w-full w-full mx-auto mb-16 md:mb-24 relative group px-2 md:px-0 h-[85vh] max-h-[800px] min-h-[700px] rounded-[24px] shadow-2xl border border-slate-200 overflow-hidden">
-              <CrmDashboardPreview />
-            </div>
-          </FadeIn>
-
-
-      <TrustSection />
-
         </div>
       </Section>
 
-      <Section id="solucoes" className="relative">
-        <div className="max-w-[1100px] mx-auto">
-          <FadeIn>
-            <div className="text-center mb-12 md:mb-20">
-              <h2 className="text-3xl md:text-6xl font-black text-[#1A237E] mb-6 tracking-tighter">O que você <span className="text-[#C5A059]">Precisa?</span></h2>
-              <p className="text-lg text-slate-500 font-light max-w-2xl mx-auto">
-                Escolha a solução ideal para o momento do seu negócio.
-              </p>
-            </div>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-2 gap-16 relative items-stretch">
-            {/* Connection Visual */}
-            <FadeIn delay={300} className="absolute top-1/2 left-[calc(50%-1.75rem)] -translate-y-1/2 z-10 hidden md:block">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-2xl border border-slate-100">
-                <RefreshCcw className="text-[#C5A059] animate-spin" style={{ animationDuration: '7s' }} size={28} />
-              </div>
-            </FadeIn>
-
-            {/* ATENDE.AI */}
-            <FadeIn direction="left" className="h-full">
-            <div className="bg-white p-6 md:p-14 rounded-[32px] md:rounded-[64px] border border-slate-200 shadow-2xl flex flex-col items-center text-center transform transition-all hover:scale-[1.03] hover:border-[#C5A059]/40 hover:shadow-3xl h-full">
-              <div className="w-24 h-24 rounded-[32px] bg-[#1A237E] flex items-center justify-center text-[#C5A059] mb-12 shadow-2xl border border-white/10">
-                <BrainCircuit size={48} />
-              </div>
-              <h3 className="text-3xl md:text-5xl font-black text-[#1A237E] mb-5 tracking-tighter leading-none">Atende.AI</h3>
-              <p className="text-[#C5A059] font-black uppercase text-[11px] tracking-[0.5em] mb-12">Cérebro do seu Receptivo</p>
-              
-              <ul className="space-y-6 text-left w-full max-w-xs mx-auto mb-14">
-                {[
-                  "Atendimento Humanizado 24/7",
-                  "Envia e Lê Imagens, Vídeos e Documentos",
-                  "API Oficial do WhatsApp",
-                  "Qualificação Automática de Leads",
-                ].map((text, i) => (
-                  <li key={i} className="flex items-start gap-5 text-slate-600 font-bold italic text-[15px] leading-tight">
-                    <CheckCircle2 className="text-[#C5A059] w-6 h-6 flex-shrink-0" />
-                    <span>{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button variant="secondary" className="w-full mt-auto py-6" href="#planos">Dominar Receptivo</Button>
-            </div>
-            </FadeIn>
-
-            {/* PROSPECT.AI */}
-            <FadeIn direction="right" className="h-full">
-            <div className="bg-white p-6 md:p-14 rounded-[32px] md:rounded-[64px] border border-slate-200 shadow-2xl flex flex-col items-center text-center transform transition-all hover:scale-[1.03] hover:border-[#C5A059]/40 hover:shadow-3xl h-full">
-              <div className="w-24 h-24 rounded-[32px] bg-[#C5A059] flex items-center justify-center text-white mb-12 shadow-2xl border border-white/10">
-                <Target size={48} />
-              </div>
-              <h3 className="text-3xl md:text-5xl font-black text-[#1A237E] mb-5 tracking-tighter leading-none">Prospect.AI</h3>
-              <p className="text-[#C5A059] font-black uppercase text-[11px] tracking-[0.5em] mb-12">Motor de Prospecção Ativa</p>
-
-              <ul className="space-y-6 text-left w-full max-w-xs mx-auto mb-14">
-                {[
-                  "Prospecção fria automatizada",
-                  "Filtro de leads qualificados",
-                  "Disparo em massa inteligente",
-                  "Follow-up Automático"      
-                ].map((text, i) => (
-                  <li key={i} className="flex items-start gap-5 text-slate-600 font-bold italic text-[15px] leading-tight">
-                    <CheckCircle2 className="text-[#C5A059] w-6 h-6 flex-shrink-0" />
-                    <span>{text}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button variant="glow" className="w-full mt-auto py-6" href="#planos">Escalar Vendas</Button>
-            </div>
-            </FadeIn>
-          </div>
-        </div>
-      </Section>
+      <ProductsSection />
 
       {/* Valores Section */}
-      <Section id="planos">
+      <Section id="planos" className="bg-slate-50/50">
         <FadeIn>
-          <div className="text-center mb-12 md:mb-24">
-            <h2 className="text-4xl md:text-8xl font-black text-[#1A237E] mb-8 tracking-tighter text-center mx-auto leading-none">Planos de <span className="text-[#C5A059]">Escala</span></h2>
-            <p className="text-xl md:text-2xl text-[#1A237E]/60 font-light max-w-3xl mx-auto text-center leading-relaxed">Selecione o motor que vai levar seu faturamento para o próximo nível com investimento inteligente.</p>
+          <div className="text-center mb-12 md:mb-20">
+            <h2 className="text-4xl md:text-7xl font-black text-[#111827] mb-6 tracking-tighter text-center mx-auto leading-none">Planos de <span className="text-[#C5A059]">Escala</span></h2>
+            <p className="text-xl md:text-2xl text-slate-500 font-light max-w-3xl mx-auto text-center leading-relaxed">
+              Compare nossas opções e escolha a inteligência ideal para a sua operação.
+            </p>
           </div>
         </FadeIn>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto px-4 md:px-6 mb-8 md:mb-16 items-stretch">
-          <FadeIn delay={150} className="h-full">
-          <PlanCard 
-            title="Essencial"
-            subtitle="Para Negócios em Crescimento"
-            price="297"
-            offerText="Média de 300 atendimentos/Mês"
-            ctaText="Contratar Agora"
-            paymentLink={import.meta.env.VITE_ASAAS_ESSENTIAL_URL}
-            variant="highlighted"
-            popular={true}
-            features={[
-              "Plataforma CRM Completa",
-              "ProspectAI e AtendAI",
-              "Atendimento e Prospecção IA",
-              "Integração WhatsApp Oficial",
-            ]}
-          />
-          </FadeIn>
-          <FadeIn delay={300} className="h-full">
-          <PlanCard 
-            title="Corporativo"
-            subtitle="Alta Performance e Escala"
-            price="997"
-            variant="elite"
-            percent="1.000"
-            description="Acesso direto ao time de engenharia para personalizações avançadas."
-            ctaText="Falar com Estrategista"
-            features={[
-              "Tudo do Plano Essencial",
-              "Personalizações sob Demanda",
-              "Engenharia de Prompt Dedicada",
-              "Múltiplos Números de WhatsApp",
-              "10x mais Tokens para sua IA"
-            ]}
-          />
-          </FadeIn>
-        </div>
+
+        <FadeIn delay={200}>
+          {/* Mobile Carousel (Flex Cards) */}
+          <div className="flex md:hidden overflow-x-auto snap-x snap-mandatory gap-4 px-[7.5vw] pb-10 no-scrollbar overscroll-x-contain">
+            {/* Card Básico */}
+            <div className="min-w-[85vw] snap-center bg-white rounded-3xl shadow-xl border border-slate-100 flex flex-col overflow-hidden">
+              <div className="p-6 border-b border-slate-100 text-center">
+                <h3 className="font-bold text-[#111827] text-xl">Básico</h3>
+                <p className="text-xs text-slate-500 mt-1">AtendAI Lite</p>
+              </div>
+              <div className="p-6 flex flex-col gap-6 flex-grow">
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Preço</span>
+                  <span className="text-[11px] text-slate-400 block">A partir de</span>
+                  <span className="font-bold text-[#111827] text-2xl">R$ 29,90</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Tipo de Cobrança</span>
+                  <span className="text-[10px] font-bold px-3 py-1.5 bg-slate-200 text-slate-700 rounded-full inline-block">Recarga ou Mensal</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Capacidade</span>
+                  <span className="text-[13px] font-bold text-[#111827]">Média de 50</span><br />
+                  <span className="text-[11px] font-normal text-slate-500">atendimentos/mês</span>
+                </div>
+                <div className="text-center flex-grow">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Funcionalidades</span>
+                  <p className="text-[13px] text-slate-500 leading-relaxed">Assistente virtual. Compra avulsa ou mensalidade básica/premium para manutenção constante da inteligência.</p>
+                </div>
+              </div>
+              <div className="p-6 border-t border-slate-100 mt-auto bg-slate-50/50">
+                <Button variant="outline" href="https://wa.me/554598302403?text=Ol%C3%A1%2C%20gostaria%20de%20assinar%20o%20plano%20B%C3%A1sico%20(AtendAI%20Lite)." target="_blank" rel="noopener noreferrer" className="w-full h-auto min-h-[44px]">Assinar AtendAI Lite</Button>
+              </div>
+            </div>
+
+            {/* Card Essencial */}
+            <div className="min-w-[85vw] snap-center bg-[#C5A059]/5 rounded-3xl shadow-2xl border-2 border-[#C5A059] flex flex-col overflow-hidden relative">
+              <div className="absolute top-0 inset-x-0 flex justify-center -translate-y-1/2">
+                <div className="bg-[#C5A059] text-white text-[10px] font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-md mt-6">
+                  Plano Recomendado
+                </div>
+              </div>
+              <div className="p-6 pt-10 border-b border-[#C5A059]/20 text-center">
+                <h3 className="font-black text-[#C5A059] text-2xl">Essencial</h3>
+                <p className="text-xs text-[#111827]/70 font-bold mt-1">AtendAI + ProspectAI</p>
+              </div>
+              <div className="p-6 flex flex-col gap-6 flex-grow">
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Preço</span>
+                  <span className="font-black text-[#C5A059] text-3xl">R$ 297,00</span>
+                  <span className="text-[11px] text-[#111827]/60 font-bold block mt-1">/ mês</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Tipo de Cobrança</span>
+                  <span className="text-[10px] font-bold px-3 py-1.5 bg-[#C5A059]/20 text-[#C5A059] rounded-full inline-block">Assinatura Mensal</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Capacidade</span>
+                  <span className="text-[13px] font-black text-[#111827]">Média de 300</span><br />
+                  <span className="text-[11px] font-bold text-[#C5A059]">atendimentos/mês</span>
+                </div>
+                <div className="text-center flex-grow">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Funcionalidades</span>
+                  <div className="flex justify-center mb-2"><CheckCircle2 size={18} className="text-[#C5A059]" /></div>
+                  <p className="text-[13px] text-[#111827] font-medium leading-relaxed">CRM Completo, integração WhatsApp Oficial, atendimento receptivo e prospecção ativa.</p>
+                </div>
+              </div>
+              <div className="p-6 border-t border-[#C5A059]/20 mt-auto bg-white/50">
+                <Button variant="glow" href={import.meta.env.VITE_ASAAS_ESSENTIAL_URL || "#teste"} className="w-full h-auto min-h-[44px]">Contratar Essencial</Button>
+              </div>
+            </div>
+
+            {/* Card Corporativo */}
+            <div className="min-w-[85vw] snap-center bg-white rounded-3xl shadow-xl border border-slate-100 flex flex-col overflow-hidden">
+              <div className="p-6 border-b border-slate-100 text-center">
+                <h3 className="font-bold text-[#111827] text-xl">Corporativo</h3>
+                <p className="text-xs text-slate-500 mt-1">AtendAI + ProspectAI + IntegraAI</p>
+              </div>
+              <div className="p-6 flex flex-col gap-6 flex-grow">
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Preço</span>
+                  <span className="text-[11px] text-slate-400 block">A partir de</span>
+                  <span className="font-bold text-[#111827] text-2xl">R$ 997,00</span>
+                  <span className="text-[11px] text-slate-400 block">/ mês</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Tipo de Cobrança</span>
+                  <span className="text-[10px] font-bold px-3 py-1.5 bg-green-100 text-green-700 rounded-full inline-block">Assinatura Mensal</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Capacidade</span>
+                  <span className="text-[13px] font-bold text-[#111827]">Mais de 1.000</span><br />
+                  <span className="text-[11px] text-slate-500">atendimentos/mês</span>
+                </div>
+                <div className="text-center flex-grow">
+                  <span className="text-[10px] font-black text-[#C5A059] uppercase tracking-widest block mb-2">Funcionalidades</span>
+                  <p className="text-[13px] text-slate-500 leading-relaxed">Tudo do Essencial + <span className="font-bold text-[#111827]">IntegraAI (Hub ERP Omnichannel)</span>, Engenharia de prompt, múltiplos números, 10x mais tokens.</p>
+                </div>
+              </div>
+              <div className="p-6 border-t border-slate-100 mt-auto bg-slate-50/50">
+                <Button variant="secondary" href="#teste" className="w-full h-auto min-h-[44px]">Falar com Consultor</Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block max-w-[1200px] mx-auto pb-10 px-4 md:px-0">
+            <div className="w-full inline-block align-middle">
+              <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden relative">
+                <table className="w-full text-left border-collapse table-fixed">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-6 font-medium text-slate-400 border-b border-slate-100 w-[25%]"></th>
+
+                      <th className="px-4 py-6 text-center border-b border-slate-100 w-[25%]">
+                        <h3 className="font-bold text-[#111827] text-lg">Básico</h3>
+                        <p className="text-[11px] text-slate-500 mt-1">AtendAI Lite</p>
+                      </th>
+
+                      {/* Highlighted Column */}
+                      <th className="px-4 py-6 text-center border-b-2 border-b-[#C5A059] w-[25%] bg-[#C5A059]/5 relative align-bottom">
+                        <div className="inline-block bg-[#C5A059] text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full mb-3 shadow-md">
+                          Plano Recomendado
+                        </div>
+                        <h3 className="font-black text-[#C5A059] text-lg">Essencial</h3>
+                        <p className="text-[11px] text-[#111827]/70 font-bold mt-1">AtendAI + ProspectAI</p>
+                      </th>
+
+                      <th className="px-4 py-6 text-center border-b border-slate-100 w-[25%]">
+                        <h3 className="font-bold text-[#111827] text-lg">Corporativo</h3>
+                        <p className="text-[11px] text-slate-500 mt-1">AtendAI + ProspectAI + IntegraAI</p>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    <tr className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-4 py-5 text-sm font-medium text-slate-500">Preço</td>
+                      <td className="px-4 py-5 text-center">
+                        <span className="text-[11px] text-slate-400 block">A partir de</span>
+                        <span className="font-bold text-[#111827] text-lg">R$ 29,90</span>
+                      </td>
+                      <td className="px-4 py-5 text-center bg-[#C5A059]/5">
+                        <span className="font-black text-[#C5A059] text-2xl">R$ 297,00</span>
+                        <span className="text-[11px] text-[#111827]/60 font-bold block">/ mês</span>
+                      </td>
+                      <td className="px-4 py-5 text-center">
+                        <span className="text-[11px] text-slate-400 block">A partir de</span>
+                        <span className="font-bold text-[#111827] text-lg">R$ 997,00</span>
+                        <span className="text-[11px] text-slate-400 block">/ mês</span>
+                      </td>
+                    </tr>
+
+                    <tr className="hover:bg-slate-50/50 transition-colors bg-slate-50/30">
+                      <td className="px-4 py-5 text-sm font-medium text-slate-500">Tipo de Cobrança</td>
+                      <td className="px-4 py-5 text-center">
+                        <span className="text-[10px] font-bold px-2 py-1 bg-slate-200 text-slate-700 rounded-full inline-block">Recarga ou Mensal</span>
+                      </td>
+                      <td className="px-4 py-5 text-center bg-[#C5A059]/5">
+                        <span className="text-[10px] font-bold px-2 py-1 bg-[#C5A059]/20 text-[#C5A059] rounded-full inline-block">Assinatura Mensal</span>
+                      </td>
+                      <td className="px-4 py-5 text-center">
+                        <span className="text-[10px] font-bold px-2 py-1 bg-green-100 text-green-700 rounded-full inline-block">Assinatura Mensal</span>
+                      </td>
+                    </tr>
+
+                    <tr className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-4 py-5 text-sm font-medium text-slate-500">Capacidade / Franquia</td>
+                      <td className="px-4 py-5 text-center text-[13px] font-bold text-[#111827]">
+                        Média de 50<br /><span className="text-[11px] font-normal text-slate-500">atendimentos/mês</span>
+                      </td>
+                      <td className="px-4 py-5 text-center text-[13px] font-black text-[#111827] bg-[#C5A059]/5">
+                        Média de 300<br /><span className="text-[11px] font-bold text-[#C5A059]">atendimentos/mês</span>
+                      </td>
+                      <td className="px-4 py-5 text-center text-[13px] font-bold text-[#111827]">
+                        Mais de 1.000<br /><span className="text-[11px] font-normal text-slate-500">atendimentos/mês</span>
+                      </td>
+                    </tr>
+
+                    <tr className="hover:bg-slate-50/50 transition-colors bg-slate-50/30">
+                      <td className="px-4 py-5 text-sm font-medium text-slate-500">Funcionalidades</td>
+                      <td className="px-4 py-5 text-[11px] text-slate-500 text-center leading-relaxed">
+                        Assistente virtual. Compra avulsa ou mensalidade básica/premium para manutenção constante da inteligência.
+                      </td>
+                      <td className="px-4 py-5 text-[11px] text-[#111827] font-medium text-center leading-relaxed bg-[#C5A059]/5">
+                        <span className="flex justify-center mb-1 text-[#C5A059]"><CheckCircle2 size={16} /></span>
+                        CRM Completo, integração WhatsApp Oficial, atendimento receptivo e prospecção ativa.
+                      </td>
+                      <td className="px-4 py-5 text-[11px] text-slate-500 text-center leading-relaxed">
+                        Tudo do Essencial + <span className="font-bold text-[#111827]">IntegraAI (Hub ERP Omnichannel)</span>, Engenharia de prompt, múltiplos números, 10x mais tokens.
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td className="px-4 py-5 border-t border-slate-100"></td>
+                      <td className="px-4 py-5 text-center border-t border-slate-100">
+                        <Button variant="outline" href="https://wa.me/554598302403?text=Ol%C3%A1%2C%20gostaria%20de%20assinar%20o%20plano%20B%C3%A1sico%20(AtendAI%20Lite)." target="_blank" rel="noopener noreferrer" className="!px-4 !py-3 !text-[11px] w-full whitespace-normal h-auto min-h-[44px]">Assinar AtendAI Lite</Button>
+                      </td>
+                      <td className="px-4 py-5 text-center border-t border-slate-100 bg-[#C5A059]/5 rounded-br-3xl">
+                        <Button variant="glow" href={import.meta.env.VITE_ASAAS_ESSENTIAL_URL || "#teste"} className="!px-4 !py-3 !text-[11px] w-full whitespace-normal h-auto min-h-[44px]">Contratar Essencial</Button>
+                      </td>
+                      <td className="px-4 py-5 text-center border-t border-slate-100">
+                        <Button variant="secondary" href="#teste" className="!px-4 !py-3 !text-[11px] w-full whitespace-normal h-auto min-h-[44px]">Falar com Consultor</Button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </Section>
 
       {/* Simulation Form */}
       <Section id="teste">
         <FadeIn>
-        <div className="max-w-5xl mx-auto bg-white rounded-[40px] md:rounded-[80px] p-8 md:p-28 shadow-[0_80px_160px_-40px_rgba(26,35,126,0.15)] relative overflow-hidden border border-[#C5A059]/40">
-          <div className="text-center mb-10 md:mb-20">
-            <h2 className="text-3xl md:text-5xl lg:text-7xl font-black text-[#1A237E] mb-8 tracking-tighter text-center mx-auto leading-[0.85]">Simule o Atende.AI <span className="text-[#C5A059] gold-text-glow block mt-6">Agora</span></h2>
-            <p className="text-xl md:text-2xl text-slate-500 font-light max-w-3xl mx-auto leading-relaxed mt-10">Veja como nossa inteligência artificial integrada ao CRM atende e encanta seus clientes nessa simulação em tempo real.</p>
-          </div>
+          <div className="max-w-5xl mx-auto bg-white rounded-[40px] md:rounded-[80px] p-8 md:p-28 shadow-[0_80px_160px_-40px_rgba(26,35,126,0.15)] relative overflow-hidden border border-[#C5A059]/40">
+            <div className="text-center mb-10 md:mb-20">
+              <h2 className="text-3xl md:text-5xl lg:text-7xl font-black text-[#111827] mb-8 tracking-tighter text-center mx-auto leading-[0.85]">Simule <span className="text-[#C5A059] gold-text-glow mt-6">Agora</span></h2>
+              <p className="text-xl md:text-2xl text-slate-500 font-light max-w-3xl mx-auto leading-relaxed mt-10">Veja como nossa inteligência artificial integrada ao CRM atende e encanta seus clientes nessa simulação em tempo real.</p>
+            </div>
 
-          <form onSubmit={handleFormSubmit} className="space-y-6 md:space-y-12 relative z-10 max-w-4xl mx-auto">
-            <div className="space-y-4">
-              <label className="text-[11px] font-black text-[#1A237E] uppercase tracking-[0.3em] ml-2 opacity-60">Seu Número de WhatsApp</label>
-              <input 
-                type="tel" 
-                required
-                placeholder="(00) 0 0000-0000"
-                className="w-full px-6 py-4 md:px-10 md:py-7 rounded-[28px] bg-white border border-slate-100 focus:border-[#C5A059] focus:ring-[12px] focus:ring-[#C5A059]/10 outline-none transition-all shadow-sm font-semibold text-base md:text-lg"
-                value={formState.phone}
-                onChange={handlePhoneChange}
-                maxLength={15}
-              />
-              <p className="text-[10px] text-slate-400 flex items-center gap-1 pl-2"><Shield size={10} /> Seus dados estão seguros. Não enviamos spam.</p>
-            </div>
-            <div className="space-y-4">
-              <label className="text-[11px] font-black text-[#1A237E] uppercase tracking-[0.3em] ml-2 opacity-60">Descreva sua empresa</label>
-              <textarea 
-                required
-                rows={5}
-                placeholder="Ex: Sou a Clínica Estética Bela Vida. Gostaria que a IA tirasse dúvidas sobre procedimentos e informasse os horários de funcionamento."
-                className="w-full px-6 py-4 md:px-10 md:py-7 rounded-[28px] bg-white border border-slate-100 focus:border-[#C5A059] focus:ring-[12px] focus:ring-[#C5A059]/10 outline-none transition-all shadow-sm resize-none font-semibold text-base md:text-lg leading-relaxed"
-                value={formState.description}
-                onChange={(e) => setFormState({...formState, description: e.target.value})}
-              />
-            </div>
-            <div>
-              <Button variant="glow" className="w-full py-5 md:py-9 text-lg md:text-2xl shadow-2xl disabled:opacity-70 disabled:cursor-not-allowed" disabled={isLoading}>
-                {isLoading ? 'Processando...' : <>Quero ver minha IA vendendo agora <ChevronRight size={36} className="ml-2" /></>}
-              </Button>
-              {isLoading && (
-                <p className="text-center text-[#1A237E] font-bold mt-6 animate-pulse text-lg">
-                  Você será direcionado para o WhatsApp, mande a mensagem inicial e observe a demonstração do Atendimento.
-                </p>
-              )}
-            </div>
-          </form>
-        </div>
+            <form onSubmit={handleFormSubmit} className="space-y-6 md:space-y-12 relative z-10 max-w-4xl mx-auto">
+              <div className="space-y-4">
+                <label className="text-[11px] font-black text-[#111827] uppercase tracking-[0.3em] ml-2 opacity-60">Seu Número de WhatsApp</label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="(00) 0 0000-0000"
+                  className="w-full px-6 py-4 md:px-10 md:py-7 rounded-[28px] bg-white border border-slate-100 focus:border-[#C5A059] focus:ring-[12px] focus:ring-[#C5A059]/10 outline-none transition-all shadow-sm font-semibold text-base md:text-lg"
+                  value={formState.phone}
+                  onChange={handlePhoneChange}
+                  maxLength={15}
+                />
+                <p className="text-[10px] text-slate-400 flex items-center gap-1 pl-2"><Shield size={10} /> Seus dados estão seguros. Não enviamos spam.</p>
+              </div>
+              <div className="space-y-4">
+                <label className="text-[11px] font-black text-[#111827] uppercase tracking-[0.3em] ml-2 opacity-60">Descreva sua empresa</label>
+                <textarea
+                  required
+                  rows={5}
+                  placeholder="Ex: Sou a Clínica Estética Bela Vida. Gostaria que a IA tirasse dúvidas sobre procedimentos e informasse os horários de funcionamento."
+                  className="w-full px-6 py-4 md:px-10 md:py-7 rounded-[28px] bg-white border border-slate-100 focus:border-[#C5A059] focus:ring-[12px] focus:ring-[#C5A059]/10 outline-none transition-all shadow-sm resize-none font-semibold text-base md:text-lg leading-relaxed"
+                  value={formState.description}
+                  onChange={(e) => setFormState({ ...formState, description: e.target.value })}
+                />
+              </div>
+              <div>
+                <Button variant="glow" className="w-full py-5 md:py-9 text-lg md:text-2xl shadow-2xl disabled:opacity-70 disabled:cursor-not-allowed" disabled={isLoading}>
+                  {isLoading ? 'Processando...' : <>Quero ver minha IA vendendo agora <ChevronRight size={36} className="ml-2" /></>}
+                </Button>
+                {isLoading && (
+                  <p className="text-center text-[#111827] font-bold mt-6 animate-pulse text-lg">
+                    Você será direcionado para o WhatsApp, mande a mensagem inicial e observe a demonstração do Atendimento.
+                  </p>
+                )}
+              </div>
+            </form>
+          </div>
         </FadeIn>
       </Section>
 
       <FAQSection />
 
       {/* Footer */}
-      <footer className="bg-[#1A237E] py-10 md:py-32 px-6 relative overflow-hidden text-center">
+      <footer className="bg-[#111827] py-16 md:py-24 px-6 relative overflow-hidden">
         <div className="absolute bottom-0 left-0 w-full h-[600px] bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
-        <div className="max-w-5xl mx-auto flex flex-col items-center gap-8 md:gap-16 relative z-10">
-          <div className="flex flex-col items-center gap-6">
-            <span className="font-black text-4xl md:text-5xl tracking-tighter text-white">
-              Digital ForMe <span className="text-[#C5A059]">| CJS Soluções</span>
-            </span>
-            <p className="text-blue-100/50 text-base font-light max-w-md leading-relaxed italic mt-4">
-              A revolução do atendimento digital, desenhada para máxima autoridade e conversão em escala global.
-            </p>
-            
-            {/* Social Media Icons */}
-            <div className="flex items-center gap-6 mt-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300 hover:scale-110">
-                <Instagram size={20} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300 hover:scale-110">
-                <Linkedin size={20} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300 hover:scale-110">
-                <Facebook size={20} />
-              </a>
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 text-center md:text-left">
+            <div className="col-span-1 md:col-span-2 flex flex-col items-center md:items-start gap-6">
+              <img src={logo} alt="CJS Soluções" className="h-10 md:h-14 object-contain" />
+              <p className="text-blue-100/60 text-sm font-light max-w-sm leading-relaxed">
+                A revolução do atendimento digital, desenhada para máxima autoridade e conversão em escala global.
+              </p>
+
+              <div className="flex items-center gap-4 mt-2">
+                <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300">
+                  <Instagram size={20} />
+                </a>
+                <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300">
+                  <Linkedin size={20} />
+                </a>
+                <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#C5A059] hover:bg-[#C5A059] hover:text-white transition-all duration-300">
+                  <Facebook size={20} />
+                </a>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4 items-center md:items-start">
+              <h4 className="text-white font-bold mb-2">Navegação</h4>
+              <a href="#inicio" className="text-white/60 hover:text-[#C5A059] transition-colors text-sm">Início</a>
+              <a href="#como-funciona" className="text-white/60 hover:text-[#C5A059] transition-colors text-sm">Como Funciona</a>
+              <a href="#planos" className="text-white/60 hover:text-[#C5A059] transition-colors text-sm">Valores</a>
+              <a href="#faq" className="text-white/60 hover:text-[#C5A059] transition-colors text-sm">FAQ</a>
+            </div>
+
+            <div className="flex flex-col gap-4 items-center md:items-start">
+              <h4 className="text-white font-bold mb-2">Legal</h4>
+              <a href="#" className="text-white/60 hover:text-[#C5A059] transition-colors text-sm">Termos de Uso</a>
+              <a href="#" className="text-white/60 hover:text-[#C5A059] transition-colors text-sm">Política de Privacidade</a>
+              <span className="text-white/60 text-sm mt-2">CNPJ: 63.251.000/0001-84</span>
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-x-14 gap-y-6 text-xs font-black text-[#C5A059] uppercase tracking-[0.3em] border-y border-white/10 py-12 w-full">
-            <a href="#inicio" className="hover:text-white transition-all transform hover:scale-105">Início</a>
-            <a href="#como-funciona" className="hover:text-white transition-all transform hover:scale-105">Como Funciona</a>
-            <a href="#planos" className="hover:text-white transition-all transform hover:scale-105">Valores</a>
-            <a href="#faq" className="hover:text-white transition-all transform hover:scale-105">FAQ</a>
-            <a href="#" className="hover:text-white transition-all transform hover:scale-105">Termos de Uso</a>
-            <a href="#" className="hover:text-white transition-all transform hover:scale-105">Privacidade</a>
-          </div>
-
-          <div className="space-y-6">
-            <p className="text-[12px] text-[#C5A059] font-black uppercase tracking-[0.4em] opacity-60">CNPJ: 63.251.000/0001-84</p>
-            <p className="text-[11px] text-white/20 uppercase tracking-[0.6em] font-medium">Digital ForMe Intelligence Ecosistem</p>
-            <p className="text-[11px] text-white/40 mt-10 font-bold opacity-30">© 2026 CJS Soluções. TODOS OS DIREITOS RESERVADOS.</p>
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+            <p className="text-[11px] text-white/40 uppercase tracking-widest font-bold">
+              © 2026 CJS Soluções. TODOS OS DIREITOS RESERVADOS.
+            </p>
+            <p className="text-[11px] text-[#C5A059] uppercase tracking-widest font-medium opacity-80">
+              CJS Soluções Intelligence Ecosistem
+            </p>
           </div>
         </div>
       </footer>
