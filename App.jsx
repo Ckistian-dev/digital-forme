@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import api from './axiosConfig';
-import logo from './public/logo.png';
+import logo from './public/Logo CJS.png';
 import logoOdontojet from './public/logoOdontojet.PNG';
 import logoFerragens from './public/logoFerragens.png';
 import {
@@ -140,7 +140,7 @@ const StickyTopBar = () => (
 
 const FloatingWhatsApp = () => {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "5500000000000";
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Digital%20ForMe.`;
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20CJS%20Soluções.`;
 
   return (
     <a
