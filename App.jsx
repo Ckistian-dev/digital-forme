@@ -289,7 +289,7 @@ const Navbar = () => {
       <nav className={`w-full fixed top-0 left-0 right-0 z-[90] h-20 px-4 md:h-24 md:mt-[-10px] md:px-8 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="#inicio" className="flex items-center relative z-[100]">
-            <img src={logo} alt="CJS Soluções" className="h-20 md:h-24 lg:h-28 object-contain" />
+            <img src={logo} alt="CJS Soluções" className="h-10 md:h-12 lg:h-14 object-contain" />
           </a>
 
           <div className="flex items-center gap-3 md:gap-4 relative z-[100]">
